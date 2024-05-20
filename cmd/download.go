@@ -22,9 +22,9 @@ const (
 	Latest Patch = "latest"
 )
 
-// downloadChampionCmd represents the downloadChampion command
-var downloadChampionCmd = &cobra.Command{
-	Use:   "downloadChampion",
+// downloadCmd represents the download command
+var downloadCmd = &cobra.Command{
+	Use:   "download",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -51,17 +51,17 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(downloadChampionCmd)
+	rootCmd.AddCommand(downloadCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// downloadChampionCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// downloadCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// downloadChampionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// downloadCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func download(champName string, patch Patch) []byte {
