@@ -11,14 +11,14 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "5pots",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Use:   "pots",
+	Short: "A CLI application to work with PBE data changes.",
+	Long: `pots is a command-line interface (CLI) application designed to work with
+Public Beta Environment (PBE) data changes for the game League of Legends.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+It provides functionalities to download champion data, calculate
+differences and list an overview of changes between live and
+test data.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
