@@ -33,16 +33,19 @@ This command fetches the latest champion data and optionally removes noise from 
 
 		c := &champion.Champion{Name: champName}
 
-		pbe, err := c.Download(common.PBE)
+		fmt.Printf("Downloading %s data on patch %s...\n", c.Name, common.PBE)
+		pbe, err := c.Download(common.PBE, clean)
 		if err != nil {
 			log.Fatalf("Failed to Download PBE data: %v", err)
 		}
 
-		live, err := c.Download(common.Latest)
+		fmt.Printf("Downloading %s data on patch %s...\n", c.Name, common.Latest)
+		live, err := c.Download(common.Latest, clean)
 		if err != nil {
 			log.Fatalf("Failed to Download Live data: %v", err)
 		}
 
+		fmt.Printf("--clean flag detected, cleaning up data...\n")
 		if clean {
 			pbe = champion.RemoveNoise(pbe)
 			live = champion.RemoveNoise(live)
@@ -55,6 +58,7 @@ This command fetches the latest champion data and optionally removes noise from 
 
 		dir := fmt.Sprintf("%s/data", wd)
 
+		fmt.Printf("Saving to file...\n")
 		if err := c.SaveToFile(dir, latestFileName, live); err != nil {
 			log.Fatalf("Failed to save file %s: %v", latestFileName, err)
 		}

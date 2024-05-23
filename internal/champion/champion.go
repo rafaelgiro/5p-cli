@@ -1,30 +1,72 @@
 package champion
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/5pots-com/cli/internal/common"
 )
 
 type Champion struct {
 	Name string
-	Data []byte
+}
+
+type Strings struct {
+	Entries map[string]string `json:"entries"`
 }
 
 const (
-	champURL = "https://raw.communitydragon.org/%s/game/data/characters/%s/%s.bin.json"
+	champURL   = "https://raw.communitydragon.org/%s/game/data/characters/%s/%s.bin.json"
+	stringsURL = "https://raw.communitydragon.org/%s/game/en_us/data/menu/en_us/main.stringtable.json"
 )
 
-func (c *Champion) Download(patch common.Patch) ([]byte, error) {
+func (c *Champion) Download(patch common.Patch, clean bool) ([]byte, error) {
 	if !common.Validate(patch) {
 		return nil, fmt.Errorf("invalid patch: %s", patch)
 	}
 
-	url := fmt.Sprintf(champURL, patch, c.Name, c.Name)
+	d, err := downChamp(c.Name, patch)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch champion data: %v", err)
+	}
+
+	s, err := downStrings(patch, c.Name, clean)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch tooltips data: %v", err)
+	}
+
+	var data map[string]interface{}
+
+	if err := json.Unmarshal(d, &data); err != nil {
+		return nil, fmt.Errorf("failed to convert champion data: %v", err)
+	}
+
+	var strs map[string]interface{}
+
+	if err := json.Unmarshal(s, &strs); err != nil {
+		return nil, fmt.Errorf("failed to convert tolltip data: %v", err)
+	}
+
+	data["tooltips"] = strs
+
+	ch, err := json.Marshal(data)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert champion json: %v", err)
+	}
+
+	return ch, nil
+}
+
+func downChamp(name string, patch common.Patch) ([]byte, error) {
+	url := fmt.Sprintf(champURL, patch, name, name)
 	res, err := http.Get(url)
 
 	if err != nil {
@@ -41,10 +83,52 @@ func (c *Champion) Download(patch common.Patch) ([]byte, error) {
 	return body, nil
 }
 
+func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
+	url := fmt.Sprintf(stringsURL, patch)
+	res, err := http.Get(url)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data from %s: %v", url, err)
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	var data Strings
+
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, fmt.Errorf("failed to parse to json: %v", err)
+	}
+
+	targetKey := fmt.Sprintf("generatedtip_spell_%s", name)
+	final := make(map[string]string)
+
+	for key, value := range data.Entries {
+		if !clean && strings.Contains(key, targetKey) {
+			final[key] = value
+		} else if clean && strings.Contains(key, targetKey) && strings.Contains(key, "tooltipextended") {
+			final[key] = value
+		}
+	}
+
+	d, err := json.Marshal(final)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed convert json: %v", err)
+	}
+
+	return d, nil
+}
+
 func RemoveNoise(data []byte) []byte {
 	replacements := map[string]string{
-		`"mFormat":"\{.*?\}",`:     "",
-		`"mAllStartingItemIds":.*`: "}}",
+		`"mFormat":"\{.*?\}",`:      "",
+		`,"mAllStartingItemIds":.*`: "}}",
+		`"EventToTrack":.*?,`:       `"EventToTrack": 0,`,
 	}
 
 	for pat, rep := range replacements {
@@ -63,8 +147,13 @@ func (c Champion) SaveToFile(dir, fileName string, data []byte) error {
 	}
 
 	filePath := fmt.Sprintf("%s/%s", finalDir, fileName)
+	fdata, err := common.Format(data)
 
-	if err := os.WriteFile(filePath, data, 0666); err != nil {
+	if err != nil {
+		return fmt.Errorf("failed to format file %s: %v", finalDir, err)
+	}
+
+	if err := os.WriteFile(filePath, fdata, 0666); err != nil {
 		return fmt.Errorf("failed to create file %s: %v", filePath, err)
 	}
 
