@@ -7,13 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Patch string
-
-const (
-	PBE    Patch = "pbe"
-	Latest Patch = "latest"
-)
-
 var downloadCmd = &cobra.Command{
 	Use:   "download",
 	Short: "Downloads current live and PBE data.",
