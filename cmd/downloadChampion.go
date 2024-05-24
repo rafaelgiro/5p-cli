@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/5pots-com/cli/internal/champion"
 	"github.com/5pots-com/cli/internal/common"
@@ -55,20 +56,26 @@ This command fetches the latest champion data and optionally removes noise from 
 			log.Fatalf("Failed to read local data: %v", err)
 		}
 
+		var wg sync.WaitGroup
+
 		if hasNewLatest || force {
-			downSaveLatest(c, dir)
+			wg.Add(1)
+			go downSaveLatest(c, dir, &wg)
 		} else {
 			fmt.Printf("Live version already downloaded for %s\n", c.Name)
 		}
 		if hasNewPBE || force {
-			downSavePBE(c, dir)
+			wg.Add(1)
+			go downSavePBE(c, dir, &wg)
 		} else {
 			fmt.Printf("PBE version already downloaded for %s\n", c.Name)
 		}
 		if hasNewLatest || hasNewPBE {
-			downSaveMetaData(c, dir)
+			wg.Add(1)
+			go downSaveMetaData(c, dir, &wg)
 		}
 
+		wg.Wait()
 		fmt.Printf("Success!\n")
 	},
 	Example: `  # Download data for a specific champion
@@ -87,7 +94,8 @@ func init() {
 	downloadChampionCmd.Flags().BoolVarP(&force, "force", "f", false, "ignores metadata matching version and downloads the champion anyway")
 }
 
-func downSavePBE(c *champion.Champion, dir string) {
+func downSavePBE(c *champion.Champion, dir string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.PBE)
 	pbe, err := c.Download(common.PBE, !dirty)
 	if err != nil {
@@ -103,8 +111,8 @@ func downSavePBE(c *champion.Champion, dir string) {
 	}
 }
 
-func downSaveLatest(c *champion.Champion, dir string) {
-
+func downSaveLatest(c *champion.Champion, dir string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.Latest)
 	live, err := c.Download(common.Latest, !dirty)
 	if err != nil {
@@ -120,7 +128,8 @@ func downSaveLatest(c *champion.Champion, dir string) {
 	}
 }
 
-func downSaveMetaData(c *champion.Champion, dir string) {
+func downSaveMetaData(c *champion.Champion, dir string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	m, err := common.DownloadMetadata()
 	if err != nil {
 		log.Fatalf("Failed to download metadata: %v", err)
