@@ -55,12 +55,12 @@ This command fetches the latest champion data and optionally removes noise from 
 			log.Fatalf("Failed to read local data: %v", err)
 		}
 
-		if hasNewLatest {
+		if hasNewLatest || force {
 			downSaveLatest(c, dir)
 		} else {
 			fmt.Printf("Live version already downloaded for %s\n", c.Name)
 		}
-		if hasNewPBE {
+		if hasNewPBE || force {
 			downSavePBE(c, dir)
 		} else {
 			fmt.Printf("PBE version already downloaded for %s\n", c.Name)
