@@ -6,13 +6,11 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/5pots-com/cli/internal/champion"
-	"github.com/5pots-com/cli/internal/common"
 	"github.com/spf13/cobra"
-	diff "github.com/yudai/gojsondiff"
-	"github.com/yudai/gojsondiff/formatter"
 )
 
 var simple bool
@@ -24,47 +22,27 @@ var diffChampionCmd = &cobra.Command{
 	Long:  `Find differences from PBE and Live for Champions and prints them on the screen`,
 	Run: func(cmd *cobra.Command, args []string) {
 		champName := strings.ToLower(args[0])
-
 		c := &champion.Champion{Name: champName}
 
-		fmt.Printf("Downloading %s data on patch %s...\n", c.Name, common.PBE)
-		pbe, err := c.Download(common.PBE, !dirty)
+		wd, err := os.Getwd()
 		if err != nil {
-			log.Fatalf("Failed to Download PBE data: %v", err)
+			log.Fatalf("Failed to get current directory: %v", err)
 		}
 
-		fmt.Printf("Downloading %s data on patch %s...\n", c.Name, common.Latest)
-		live, err := c.Download(common.Latest, !dirty)
+		dir := fmt.Sprintf("%s/data/champions", wd)
+		if err := c.CheckDownload(dir); err != nil {
+			log.Fatalf("Files not found for \"%s\". Please run the download champion command first: %v", c.Name, err)
+		}
+
+		diff, err := c.LoadAndDiff(dir)
 		if err != nil {
-			log.Fatalf("Failed to Download Live data: %v", err)
+			log.Fatalf("Failed to find diff for %s: %v", c.Name, err)
 		}
 
-		fmt.Printf("Finding differences...\n")
-
-		pbe = champion.RemoveNoise(pbe)
-		live = champion.RemoveNoise(live)
-
-		fpbe, err := common.Format(pbe)
-		flive, err := common.Format(live)
-
-		jd := diff.New()
-
-		diffs, err := jd.Compare(flive, fpbe)
-
-		formatter := formatter.NewDeltaFormatter()
-		diffString, err := formatter.Format(diffs)
-
-		if simple {
-			fmt.Println(diffs.Deltas())
-		} else {
-
-			fmt.Println(diffString)
-		}
-
+		fmt.Println(diff)
 	},
 }
 
 func init() {
 	diffCmd.AddCommand(diffChampionCmd)
-	diffChampionCmd.Flags().BoolVarP(&simple, "simple", "s", false, "automatically cleans noise from data")
 }
