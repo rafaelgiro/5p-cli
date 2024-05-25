@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -12,13 +11,13 @@ import (
 	"github.com/5pots-com/cli/internal/common"
 )
 
-func (c *Champion) DownSavePBE(dir string, dirty bool, wg *sync.WaitGroup) {
+func (c *Champion) DownSavePBE(dir string, dirty bool, wg *sync.WaitGroup) error {
 	defer wg.Done()
 	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.PBE)
 
 	pbe, err := c.Download(common.PBE, !dirty)
 	if err != nil {
-		log.Fatalf("Failed to Download PBE data: %v", err)
+		return fmt.Errorf("failed to Download PBE data: %v", err)
 	}
 
 	if !dirty {
@@ -26,17 +25,19 @@ func (c *Champion) DownSavePBE(dir string, dirty bool, wg *sync.WaitGroup) {
 	}
 
 	if err := c.SaveToFile(dir, common.PBEFile, pbe); err != nil {
-		log.Fatalf("Failed to save file %s: %v", common.PBEFile, err)
+		return fmt.Errorf("failed to save file %s: %v", common.PBEFile, err)
 	}
+
+	return nil
 }
 
-func (c *Champion) DownSaveLatest(dir string, dirty bool, wg *sync.WaitGroup) {
+func (c *Champion) DownSaveLatest(dir string, dirty bool, wg *sync.WaitGroup) error {
 	defer wg.Done()
 	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.Latest)
 
 	live, err := c.Download(common.Latest, !dirty)
 	if err != nil {
-		log.Fatalf("Failed to Download Live data: %v", err)
+		return fmt.Errorf("failed to Download Live data: %v", err)
 	}
 
 	if !dirty {
@@ -44,21 +45,25 @@ func (c *Champion) DownSaveLatest(dir string, dirty bool, wg *sync.WaitGroup) {
 	}
 
 	if err := c.SaveToFile(dir, common.LatestFile, live); err != nil {
-		log.Fatalf("Failed to save file %s: %v", common.LatestFile, err)
+		return fmt.Errorf("failed to save file %s: %v", common.LatestFile, err)
 	}
+
+	return nil
 }
 
-func (c *Champion) DownSaveMetaData(dir string, wg *sync.WaitGroup) {
+func (c *Champion) DownSaveMetaData(dir string, wg *sync.WaitGroup) error {
 	defer wg.Done()
 
 	m, err := common.DownloadMetadata()
 	if err != nil {
-		log.Fatalf("Failed to download metadata: %v", err)
+		return fmt.Errorf("failed to download metadata: %v", err)
 	}
 
 	if err := c.SaveToFile(dir, common.MetaFile, m); err != nil {
-		log.Fatalf("Failed to save file %s: %v", common.MetaFile, err)
+		return fmt.Errorf("failed to save file %s: %v", common.MetaFile, err)
 	}
+
+	return nil
 }
 
 func (c *Champion) Download(patch common.Patch, clean bool) ([]byte, error) {
