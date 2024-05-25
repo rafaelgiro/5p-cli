@@ -1,13 +1,9 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
@@ -15,18 +11,6 @@ import (
 	"github.com/5pots-com/cli/internal/common"
 	"github.com/spf13/cobra"
 )
-
-type Character struct {
-	Name  string `json:"name"`
-	Type  string `json:"type"`
-	Mtime string `json:"mtime"`
-}
-
-const (
-	charactersURL = "https://raw.communitydragon.org/json/%s/game/data/characters/"
-)
-
-var filteredCharacters = []string{"tft", "tutorial", "trinket", "bw_", "cherry_", "durian_", "ha_", "hexgate", "item_", "kingporo", "nexus", "pet", "slime_", "sru_", "ultbook", "sruap_", "srx", "test", "practicetool_", "preseason_", "spellbook", "sr_infernal", "summonerbeacon"}
 
 var downloadChampionsCmd = &cobra.Command{
 	Use:   "champions [name]",
@@ -61,7 +45,7 @@ to quickly create a Cobra application.`,
 
 		var wg sync.WaitGroup
 
-		chs, err := downCharacters(common.PBE)
+		chs, err := common.DownCharacters(common.PBE, champion.FilteredCharacters)
 		if err != nil {
 			log.Fatalf("Failed to download list of characters: %v", err)
 		}
@@ -73,25 +57,26 @@ to quickly create a Cobra application.`,
 
 		for _, ch := range chs {
 			c := &champion.Champion{Name: ch}
+			champDir := fmt.Sprintf("/%s/%s", dir, c.Name)
 
 			if hasNewLatest || force {
 				wg.Add(1)
-				go DownSaveLatest(c, dir, &wg)
+				go c.DownSaveLatest(champDir, dirty, &wg)
 			} else {
 				fmt.Printf("Live version already downloaded for %s\n", c.Name)
 			}
 			if hasNewPBE || force {
 				wg.Add(1)
-				go downSavePBE(c, dir, &wg)
+				go c.DownSavePBE(champDir, dirty, &wg)
 			} else {
 				fmt.Printf("PBE version already downloaded for %s\n", c.Name)
 			}
 			if hasNewLatest || hasNewPBE {
 				wg.Add(1)
-				go downSaveMetaData(c, dir, &wg)
+				go c.DownSaveMetaData(champDir, &wg)
 			}
 			wg.Wait()
-			time.Sleep(time.Second / 2)
+			time.Sleep(time.Second / 4)
 		}
 
 		common.SaveMeta(m, wd)
@@ -104,48 +89,4 @@ func init() {
 	downloadCmd.AddCommand(downloadChampionsCmd)
 	downloadChampionsCmd.Flags().BoolVarP(&dirty, "dirty", "d", false, "leave noise in data for debugging")
 	downloadChampionsCmd.Flags().BoolVarP(&force, "force", "f", false, "ignores metadata matching version and downloads the champion anyway")
-}
-
-func downCharacters(p common.Patch) ([]string, error) {
-	if !common.Validate(p) {
-		return nil, fmt.Errorf("invalid p: %s", p)
-	}
-
-	url := fmt.Sprintf(charactersURL, p)
-	res, err := http.Get(url)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch data from %s: %v", url, err)
-	}
-	defer res.Body.Close()
-
-	body, err := io.ReadAll(res.Body)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
-	}
-
-	var characters []Character
-	if err := json.Unmarshal(body, &characters); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %v", err)
-	}
-
-	var list []string
-
-	for _, c := range characters {
-		if !contains(filteredCharacters, c.Name) {
-			list = append(list, c.Name)
-		}
-	}
-
-	return list, nil
-}
-
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if strings.Contains(e, a) {
-			return true
-		}
-	}
-	return false
 }

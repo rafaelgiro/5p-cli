@@ -15,12 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	pbeFileName      = "pbe.json"
-	latestFileName   = "live.json"
-	metadataFileName = "metadata.json"
-)
-
 var downloadChampionCmd = &cobra.Command{
 	Use:   "champion [name]",
 	Short: "Download data for a specific champion",
@@ -41,7 +35,7 @@ This command fetches the latest champion data and optionally removes noise from 
 			log.Fatalf("Failed to get current directory: %v", err)
 		}
 
-		dir := fmt.Sprintf("%s/data/champions", wd)
+		dir := fmt.Sprintf("%s/data/champions/%s", wd, c.Name)
 
 		hasNewLatest, err := common.HasNewVersion(common.Latest, fmt.Sprintf("%s/%s", dir, c.Name))
 		if err != nil {
@@ -57,19 +51,19 @@ This command fetches the latest champion data and optionally removes noise from 
 
 		if hasNewLatest || force {
 			wg.Add(1)
-			go DownSaveLatest(c, dir, &wg)
+			go c.DownSaveLatest(dir, dirty, &wg)
 		} else {
 			fmt.Printf("Live version already downloaded for %s\n", c.Name)
 		}
 		if hasNewPBE || force {
 			wg.Add(1)
-			go downSavePBE(c, dir, &wg)
+			go c.DownSavePBE(dir, dirty, &wg)
 		} else {
 			fmt.Printf("PBE version already downloaded for %s\n", c.Name)
 		}
 		if hasNewLatest || hasNewPBE {
 			wg.Add(1)
-			go downSaveMetaData(c, dir, &wg)
+			go c.DownSaveMetaData(dir, &wg)
 		}
 
 		wg.Wait()
@@ -89,50 +83,4 @@ func init() {
 	downloadCmd.AddCommand(downloadChampionCmd)
 	downloadChampionCmd.Flags().BoolVarP(&dirty, "dirty", "d", false, "leave noise in data for debugging")
 	downloadChampionCmd.Flags().BoolVarP(&force, "force", "f", false, "ignores metadata matching version and downloads the champion anyway")
-}
-
-func downSavePBE(c *champion.Champion, dir string, wg *sync.WaitGroup) {
-	defer wg.Done()
-	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.PBE)
-	pbe, err := c.Download(common.PBE, !dirty)
-	if err != nil {
-		log.Fatalf("Failed to Download PBE data: %v", err)
-	}
-
-	if !dirty {
-		pbe = champion.RemoveNoise(pbe)
-	}
-
-	if err := c.SaveToFile(dir, pbeFileName, pbe); err != nil {
-		log.Fatalf("Failed to save file %s: %v", pbeFileName, err)
-	}
-}
-
-func DownSaveLatest(c *champion.Champion, dir string, wg *sync.WaitGroup) {
-	defer wg.Done()
-	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.Latest)
-	live, err := c.Download(common.Latest, !dirty)
-	if err != nil {
-		log.Fatalf("Failed to Download Live data: %v", err)
-	}
-
-	if !dirty {
-		live = champion.RemoveNoise(live)
-	}
-
-	if err := c.SaveToFile(dir, latestFileName, live); err != nil {
-		log.Fatalf("Failed to save file %s: %v", latestFileName, err)
-	}
-}
-
-func downSaveMetaData(c *champion.Champion, dir string, wg *sync.WaitGroup) {
-	defer wg.Done()
-	m, err := common.DownloadMetadata()
-	if err != nil {
-		log.Fatalf("Failed to download metadata: %v", err)
-	}
-
-	if err := c.SaveToFile(dir, metadataFileName, m); err != nil {
-		log.Fatalf("Failed to save file %s: %v", pbeFileName, err)
-	}
 }
