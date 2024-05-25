@@ -33,25 +33,27 @@ func (c *Champion) Download(patch common.Patch, clean bool) ([]byte, error) {
 	d, err := downChamp(c.Name, patch)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch champion data: %v", err)
+		return nil, fmt.Errorf("failed to fetch %s champion data: %v", c.Name, err)
 	}
 
 	s, err := downStrings(patch, c.Name, clean)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch tooltips data: %v", err)
+		return nil, fmt.Errorf("failed to fetch %s tooltips data: %v", c.Name, err)
 	}
 
 	var data map[string]interface{}
 
 	if err := json.Unmarshal(d, &data); err != nil {
-		return nil, fmt.Errorf("failed to convert champion data: %v", err)
+		fmt.Printf("WARNING: Data not found for %s. Saving as blank.\n", c.Name)
+		return []byte("{}"), nil
 	}
 
 	var strs map[string]interface{}
 
 	if err := json.Unmarshal(s, &strs); err != nil {
-		return nil, fmt.Errorf("failed to convert tolltip data: %v", err)
+		fmt.Printf("WARNING: Data not found for tooltips on %s. Saving as blank.\n", c.Name)
+		return []byte("{}"), nil
 	}
 
 	data["tooltips"] = strs
@@ -59,7 +61,7 @@ func (c *Champion) Download(patch common.Patch, clean bool) ([]byte, error) {
 	ch, err := json.Marshal(data)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to convert champion json: %v", err)
+		return nil, fmt.Errorf("failed to convert %s champion json: %v", c.Name, err)
 	}
 
 	return ch, nil
@@ -77,7 +79,7 @@ func downChamp(name string, patch common.Patch) ([]byte, error) {
 	body, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
+		return nil, fmt.Errorf("failed to read response body from %s: %v", url, err)
 	}
 
 	return body, nil
@@ -101,7 +103,7 @@ func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
 	var data Strings
 
 	if err := json.Unmarshal(body, &data); err != nil {
-		return nil, fmt.Errorf("failed to parse to json: %v", err)
+		return nil, fmt.Errorf("failed to parse to json: %s: %v", url, err)
 	}
 
 	targetKey := fmt.Sprintf("generatedtip_spell_%s", name)
@@ -118,7 +120,7 @@ func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
 	d, err := json.Marshal(final)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed convert json: %v", err)
+		return nil, fmt.Errorf("failed convert json %s: %v", name, err)
 	}
 
 	return d, nil
@@ -126,7 +128,7 @@ func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
 
 func RemoveNoise(data []byte) []byte {
 	replacements := map[string]string{
-		`"mFormat":"\{.*?\}",`:      "",
+		`"mFormat":"\{.*?}`:         `"mFormat":"{loveusion}`,
 		`,"mAllStartingItemIds":.*`: "}}",
 		`"EventToTrack":.*?,`:       `"EventToTrack": 0,`,
 	}

@@ -7,6 +7,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var dirty bool
+var force bool
+
 var downloadCmd = &cobra.Command{
 	Use:   "download",
 	Short: "Downloads current live and PBE data.",
@@ -15,4 +18,5 @@ var downloadCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(downloadCmd)
+
 }

@@ -21,9 +21,6 @@ const (
 	metadataFileName = "metadata.json"
 )
 
-var dirty bool
-var force bool
-
 var downloadChampionCmd = &cobra.Command{
 	Use:   "champion [name]",
 	Short: "Download data for a specific champion",
@@ -60,7 +57,7 @@ This command fetches the latest champion data and optionally removes noise from 
 
 		if hasNewLatest || force {
 			wg.Add(1)
-			go downSaveLatest(c, dir, &wg)
+			go DownSaveLatest(c, dir, &wg)
 		} else {
 			fmt.Printf("Live version already downloaded for %s\n", c.Name)
 		}
@@ -111,7 +108,7 @@ func downSavePBE(c *champion.Champion, dir string, wg *sync.WaitGroup) {
 	}
 }
 
-func downSaveLatest(c *champion.Champion, dir string, wg *sync.WaitGroup) {
+func DownSaveLatest(c *champion.Champion, dir string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fmt.Printf("Downloading %s data on patch \"%s\"...\n", c.Name, common.Latest)
 	live, err := c.Download(common.Latest, !dirty)

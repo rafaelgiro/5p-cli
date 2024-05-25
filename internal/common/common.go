@@ -15,6 +15,7 @@ const (
 	PBE         Patch  = "pbe"
 	Latest      Patch  = "latest"
 	MetadataURL string = "https://raw.communitydragon.org/%s/content-metadata.json"
+	dataFolder  string = "data"
 )
 
 const (
@@ -130,4 +131,24 @@ func downMeta(p Patch) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+func SaveMeta(m []byte, dir string) error {
+	if err := os.MkdirAll(dataFolder, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create directory %s: %v", dataFolder, err)
+	}
+
+	filePath := fmt.Sprintf("%s/%s/%s", dir, dataFolder, "metadata.json")
+
+	fdata, err := Format(m)
+
+	if err != nil {
+		return fmt.Errorf("failed to format file %s: %v", dataFolder, err)
+	}
+
+	if err := os.WriteFile(filePath, fdata, 0666); err != nil {
+		return fmt.Errorf("failed to create file %s: %v", filePath, err)
+	}
+
+	return nil
 }
