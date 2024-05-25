@@ -52,7 +52,7 @@ func DownCharacters(p Patch, filter []string) ([]string, error) {
 func CheckDownload(files []string) error {
 	for _, f := range files {
 		if _, err := os.Stat(f); errors.Is(err, os.ErrNotExist) {
-			return err
+			return fmt.Errorf("file %s does not exist", f)
 		}
 	}
 
