@@ -16,12 +16,12 @@ const (
 func DownloadMetadata() ([]byte, error) {
 	pbe, err := down(PBE)
 	if err != nil {
-		return nil, fmt.Errorf("failed to pbe metadata: %v", err)
+		return nil, fmt.Errorf("failed to download PBE metadata: %v", err)
 	}
 
 	live, err := down(Latest)
 	if err != nil {
-		return nil, fmt.Errorf("failed to latest metadata: %v", err)
+		return nil, fmt.Errorf("failed to download latest metadata: %v", err)
 	}
 
 	var map1, map2 map[string]string
@@ -99,14 +99,14 @@ func down(p Patch) ([]byte, error) {
 	res, err := http.Get(url)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch metadatadata from %s: %v", url, err)
+		return nil, fmt.Errorf("failed to fetch metadata from URL %s: %v", url, err)
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
+		return nil, fmt.Errorf("failed to read response body from URL %s: %v", url, err)
 	}
 
 	return body, nil
