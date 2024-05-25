@@ -2,9 +2,11 @@ package common
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -45,6 +47,16 @@ func DownCharacters(p Patch, filter []string) ([]string, error) {
 	}
 
 	return list, nil
+}
+
+func CheckDownload(files []string) error {
+	for _, f := range files {
+		if _, err := os.Stat(f); errors.Is(err, os.ErrNotExist) {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func contains(f []string, s string) bool {
