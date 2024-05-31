@@ -16,11 +16,12 @@ type Character struct {
 }
 
 const (
-	PBE        Patch  = "pbe"
-	Latest     Patch  = "latest"
-	PBEFile    string = "pbe.json"
-	LatestFile string = "live.json"
-	dataFolder string = "data"
+	PBE          Patch  = "pbe"
+	Latest       Patch  = "latest"
+	PBEFile      string = "pbe.json"
+	LatestFile   string = "live.json"
+	DataFolder   string = "data"
+	OutputFolder string = "results"
 )
 
 func Validate(patch Patch) bool {

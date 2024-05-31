@@ -10,10 +10,9 @@ import (
 	"strings"
 
 	"github.com/5pots-com/cli/internal/champion"
+	"github.com/5pots-com/cli/internal/common"
 	"github.com/spf13/cobra"
 )
-
-var simple bool
 
 // diffChampionCmd represents the diffChampion command
 var diffChampionCmd = &cobra.Command{
@@ -34,12 +33,11 @@ var diffChampionCmd = &cobra.Command{
 			log.Fatalf("Files not found for \"%s\". Please run the download champion command first: %v", c.Name, err)
 		}
 
-		diff, err := c.LoadAndDiff(dir)
-		if err != nil {
-			log.Fatalf("Failed to find diff for %s: %v", c.Name, err)
+		if err := c.SaveDiff(dir, common.OutputFolder); err != nil {
+			log.Fatalf("Failed to save diff file for %s on folder %s: %v", champName, common.OutputFolder, err)
 		}
 
-		fmt.Println(diff)
+		fmt.Println("Success!")
 	},
 }
 
