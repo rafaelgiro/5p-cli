@@ -21,10 +21,11 @@ var FilteredCharacters = []string{"tft", "tutorial", "trinket", "bw_", "cherry_"
 
 func RemoveNoise(data []byte) []byte {
 	replacements := map[string]string{
-		`"mFormat":"\{.*?}`:           `"mFormat":"{loveusion}`,
-		`,"mAllStartingItemIds":.*`:   "}}",
-		`"EventToTrack":.*?,`:         `"EventToTrack": 0,`,
-		`"searchTagsSecondary":".*?"`: `"searchTagsSecondary":""`,
+		`"mFormat":"\{.*?}`:              `"mFormat":"{loveusion}`,
+		`,"mAllStartingItemIds":.*`:      "}}",
+		`,"mAllRecommendableItemIds":.*`: "}}",
+		`"EventToTrack":.*?,`:            `"EventToTrack": 0,`,
+		`"searchTagsSecondary":".*?"`:    `"searchTagsSecondary":""`,
 	}
 
 	for pat, rep := range replacements {
