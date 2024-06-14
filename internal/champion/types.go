@@ -29,7 +29,8 @@ type SpellDataResource struct {
 	CastTime float64 `mapstructure:"mCastTime"`
 	// CastType                            int                        `json:"mCastType"`
 	// ClientData                          SpellDataResourceClient    `json:"mClientData"`
-	DataValues []SpellDataValue `mapstructure:"mDataValues"`
+	DataValues   []SpellDataValue    `mapstructure:"mDataValues"`
+	EffectAmount []SpellEffectAmount `mapstructure:"mEffectAmount"`
 	// ImgIconName                         []string                   `json:"mImgIconName"`
 	// MissileSpec                         MissileSpecification       `json:"mMissileSpec"`
 	// SpellCalculations                   map[string]GameCalculation `json:"mSpellCalculations"`
@@ -44,6 +45,11 @@ type SpellDataValue struct {
 	Type   string        `mapstructure:"__type"`
 	Name   string        `mapstructure:"mName"`
 	Values []interface{} `mapstructure:"mValues"`
+}
+
+type SpellEffectAmount struct {
+	Type  string    `json:"__type"`
+	Value []float64 `json:"value"`
 }
 
 type SpellDataResourceClient struct {

@@ -12,12 +12,13 @@ import (
 )
 
 type diffResult struct {
-	Keys []string `json:"keys"`
-	Live []string `json:"live"`
-	PBE  []string `json:"pbe"`
+	Keys []string               `json:"keys"`
+	Live []string               `json:"live"`
+	PBE  []string               `json:"pbe"`
+	Diff map[string]interface{} `json:"diff"`
 }
 
-var blacklist = []string{"yuumi", "corki", "singed"}
+var blacklist = []string{"yuumi"}
 
 func (c *Champion) CheckDownload(dir string) error {
 	files := []string{
@@ -75,7 +76,9 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 
 	keys := []string{}
 	for key := range diffs {
-		keys = append(keys, key)
+		if key[0] != '{' {
+			keys = append(keys, key)
+		}
 	}
 
 	if len(keys) == 0 {
@@ -107,6 +110,7 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 	result.Live = lttps
 	result.PBE = pttps
 	result.Keys = keys
+	result.Diff = diffs
 
 	return result, nil
 }
@@ -139,23 +143,24 @@ func decode(d []byte) (JSONData, error) {
 	return result, nil
 }
 
-func mount(d JSONData, di map[string]interface{}) ([]string, error) {
+func mount(d JSONData, diffs map[string]interface{}) ([]string, error) {
 	t := []string{}
 
-	for key := range di {
-		if strings.Contains(key, "/Spells/") {
-			s := strings.Split(key, "/")
-			an := strings.ToLower(s[len(s)-1])
-			ttp := d.Tooltips[fmt.Sprintf("generatedtip_spell_%s_tooltipextended", an)]
-			spl := d.Character[key].Spell
+	for k := range diffs {
+		sp := strings.Split(k, "/")
 
-			f, err := handleTooltip(ttp, spl)
+		// Handle spell tooltip
+		if sp[0] == "Characters" && sp[2] == "Spells" && len(sp) == 5 {
+			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(sp[4]))
+			ttp := d.Tooltips[tk]
+			spl := d.Character[k].Spell
+
+			f, err := HandleTooltip(ttp, spl)
 			if err != nil {
-				return []string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", key, err)
+				return []string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
 			}
 
 			t = append(t, f)
-
 		}
 	}
 

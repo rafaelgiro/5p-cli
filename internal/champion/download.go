@@ -77,7 +77,7 @@ func (c *Champion) Download(patch common.Patch, clean bool) ([]byte, error) {
 		return nil, fmt.Errorf("failed to fetch %s champion data: %v", c.Name, err)
 	}
 
-	s, err := downStrings(patch, c.Name, clean)
+	s, err := downStrings(patch, c.Name, d)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch %s tooltips data: %v", c.Name, err)
@@ -126,7 +126,7 @@ func downChamp(name string, patch common.Patch) ([]byte, error) {
 	return body, nil
 }
 
-func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
+func downStrings(patch common.Patch, name string, c []byte) ([]byte, error) {
 	url := fmt.Sprintf(stringsURL, patch)
 	res, err := http.Get(url)
 
@@ -142,19 +142,24 @@ func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
 	}
 
 	var data Strings
-
 	if err := json.Unmarshal(body, &data); err != nil {
-		return nil, fmt.Errorf("failed to parse to json: %s: %v", url, err)
+		return nil, fmt.Errorf("failed to parse strings to json: %s: %v", url, err)
 	}
 
-	targetKey := fmt.Sprintf("generatedtip_spell_%s", name)
+	var ch map[string]interface{}
+	if err := json.Unmarshal(c, &ch); err != nil {
+		return nil, fmt.Errorf("failed to parse champion to json: %s: %v", url, err)
+	}
+
 	final := make(map[string]string)
 
-	for key, value := range data.Entries {
-		if !clean && strings.Contains(key, targetKey) && !strings.Contains(key, "urf") {
-			final[key] = value
-		} else if clean && strings.Contains(key, targetKey) && strings.Contains(key, "tooltipextended") && !strings.Contains(key, "urf") {
-			final[key] = value
+	for k := range ch {
+		sp := strings.Split(k, "/")
+		if sp[0] == "Characters" && sp[2] == "Spells" && len(sp) == 5 {
+			ttp := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(sp[4]))
+			if len(data.Entries[ttp]) != 0 {
+				final[ttp] = data.Entries[ttp]
+			}
 		}
 	}
 
