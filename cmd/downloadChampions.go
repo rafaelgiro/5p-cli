@@ -31,7 +31,7 @@ to quickly create a Cobra application.`,
 			log.Fatalf("Failed to get current directory: %v", err)
 		}
 
-		dir := fmt.Sprintf("%s/data/champions", wd)
+		dir := fmt.Sprintf("%s/data", wd)
 
 		hasNewLatest, err := common.HasNewVersion(common.Latest, dir)
 		if err != nil {
@@ -57,7 +57,7 @@ to quickly create a Cobra application.`,
 
 		for _, ch := range chs {
 			c := &champion.Champion{Name: ch}
-			champDir := fmt.Sprintf("/%s/%s", dir, c.Name)
+			champDir := fmt.Sprintf("/%s/champions/%s", dir, c.Name)
 
 			if hasNewLatest || force {
 				wg.Add(1)

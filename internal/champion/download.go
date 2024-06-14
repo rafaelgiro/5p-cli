@@ -151,9 +151,9 @@ func downStrings(patch common.Patch, name string, clean bool) ([]byte, error) {
 	final := make(map[string]string)
 
 	for key, value := range data.Entries {
-		if !clean && strings.Contains(key, targetKey) {
+		if !clean && strings.Contains(key, targetKey) && !strings.Contains(key, "urf") {
 			final[key] = value
-		} else if clean && strings.Contains(key, targetKey) && strings.Contains(key, "tooltipextended") {
+		} else if clean && strings.Contains(key, targetKey) && strings.Contains(key, "tooltipextended") && !strings.Contains(key, "urf") {
 			final[key] = value
 		}
 	}

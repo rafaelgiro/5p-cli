@@ -48,6 +48,7 @@ func HasNewVersion(p Patch, dir string) (bool, error) {
 	curr, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, MetaFile))
 
 	if err != nil {
+		fmt.Printf("Could not find %s/%s, download all files.\n", dir, MetaFile)
 		return true, nil
 	}
 

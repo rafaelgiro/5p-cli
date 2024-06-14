@@ -37,12 +37,12 @@ This command fetches the latest champion data and optionally removes noise from 
 
 		dir := fmt.Sprintf("%s/data/champions/%s", wd, c.Name)
 
-		hasNewLatest, err := common.HasNewVersion(common.Latest, fmt.Sprintf("%s/%s", dir, c.Name))
+		hasNewLatest, err := common.HasNewVersion(common.Latest, dir)
 		if err != nil {
 			log.Fatalf("Failed to read local data: %v", err)
 		}
 
-		hasNewPBE, err := common.HasNewVersion(common.PBE, fmt.Sprintf("%s/%s", dir, c.Name))
+		hasNewPBE, err := common.HasNewVersion(common.PBE, dir)
 		if err != nil {
 			log.Fatalf("Failed to read local data: %v", err)
 		}

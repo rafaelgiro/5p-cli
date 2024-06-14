@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -17,8 +18,8 @@ import (
 // diffChampionCmd represents the diffChampion command
 var diffChampionCmd = &cobra.Command{
 	Use:   "champion [name]",
-	Short: "Find differences from PBE and Live for Champions",
-	Long:  `Find differences from PBE and Live for Champions and prints them on the screen`,
+	Short: "Find differences from PBE and Live for a single champion",
+	Long:  `Find differences from PBE and Live for a single champions and prints them on the screen`,
 	Run: func(cmd *cobra.Command, args []string) {
 		champName := strings.ToLower(args[0])
 		c := &champion.Champion{Name: champName}
@@ -33,9 +34,18 @@ var diffChampionCmd = &cobra.Command{
 			log.Fatalf("Files not found for \"%s\". Please run the download champion command first: %v", c.Name, err)
 		}
 
-		if err := c.SaveDiff(dir, common.OutputFolder); err != nil {
-			log.Fatalf("Failed to save diff file for %s on folder %s: %v", champName, common.OutputFolder, err)
+		res, err := c.PrepareDiff(dir, common.OutputFolder)
+		if err != nil {
+			log.Fatalf("Failed to prepare diff file for %s on folder %s: %v", champName, common.OutputFolder, err)
 		}
+
+		ch, err := json.Marshal(res)
+		if err != nil {
+			log.Fatalf("failed to convert %s champion json: %v", c.Name, err)
+		}
+
+		d := fmt.Sprintf("%s/results", wd)
+		common.SaveToFile(d, fmt.Sprintf("%s.json", champName), ch)
 
 		fmt.Println("Success!")
 	},
