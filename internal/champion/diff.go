@@ -11,11 +11,16 @@ import (
 	"github.com/yudai/gojsondiff/formatter"
 )
 
+type diffChampion struct {
+	Name string `json:"name"`
+}
+
 type diffResult struct {
-	Keys []string               `json:"keys"`
-	Live map[string]string      `json:"live"`
-	PBE  map[string]string      `json:"pbe"`
-	Diff map[string]interface{} `json:"diff"`
+	Champion diffChampion           `json:"champion"`
+	Keys     []string               `json:"keys"`
+	Live     map[string]string      `json:"live"`
+	PBE      map[string]string      `json:"pbe"`
+	Diff     map[string]interface{} `json:"diff"`
 }
 
 var blacklist = []string{"yuumi"}
@@ -75,7 +80,12 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 	}
 
 	keys := []string{}
+	name := ""
 	for key := range diffs {
+		if strings.Split(key, "/")[0] == "Characters" && len(name) == 0 {
+			name = strings.Split(key, "/")[1]
+		}
+
 		if key[0] != '{' {
 			keys = append(keys, key)
 		}
@@ -107,6 +117,7 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 	}
 
 	result := diffResult{}
+	result.Champion = diffChampion{Name: name}
 	result.Live = lttps
 	result.PBE = pttps
 	result.Keys = keys
