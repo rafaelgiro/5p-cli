@@ -13,8 +13,8 @@ import (
 
 type diffResult struct {
 	Keys []string               `json:"keys"`
-	Live []string               `json:"live"`
-	PBE  []string               `json:"pbe"`
+	Live map[string]string      `json:"live"`
+	PBE  map[string]string      `json:"pbe"`
 	Diff map[string]interface{} `json:"diff"`
 }
 
@@ -143,26 +143,29 @@ func decode(d []byte) (JSONData, error) {
 	return result, nil
 }
 
-func mount(d JSONData, diffs map[string]interface{}) ([]string, error) {
-	t := []string{}
+func mount(d JSONData, diffs map[string]interface{}) (map[string]string, error) {
+	ts := map[string]string{}
 
 	for k := range diffs {
 		sp := strings.Split(k, "/")
 
 		// Handle spell tooltip
 		if sp[0] == "Characters" && sp[2] == "Spells" && len(sp) == 5 {
-			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(sp[4]))
-			ttp := d.Tooltips[tk]
+			k := sp[4]
+			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(k))
+			tp := d.Tooltips[tk]
 			spl := d.Character[k].Spell
 
-			f, err := HandleTooltip(ttp, spl)
+			v, err := HandleTooltip(tp, spl)
 			if err != nil {
-				return []string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
+				return map[string]string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
 			}
 
-			t = append(t, f)
+			if len(v) != 0 {
+				ts[k] = v
+			}
 		}
 	}
 
-	return t, nil
+	return ts, nil
 }
