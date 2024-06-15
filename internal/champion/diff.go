@@ -165,6 +165,11 @@ func mount(d JSONData, diffs map[string]interface{}) (map[string]string, error) 
 			k := sp[4]
 			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(k))
 			tp := d.Tooltips[tk]
+			if len(tp) == 0 {
+				tk = fmt.Sprintf("generatedtip_passive_%s_tooltipextended", strings.ToLower(k))
+				tp = d.Tooltips[tk]
+			}
+
 			spl := d.Character[k].Spell
 
 			v, err := HandleTooltip(tp, spl)

@@ -156,9 +156,13 @@ func downStrings(patch common.Patch, name string, c []byte) ([]byte, error) {
 	for k := range ch {
 		sp := strings.Split(k, "/")
 		if sp[0] == "Characters" && sp[2] == "Spells" && len(sp) == 5 {
-			ttp := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(sp[4]))
-			if len(data.Entries[ttp]) != 0 {
-				final[ttp] = data.Entries[ttp]
+			splttp := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(sp[4]))
+			pasttp := fmt.Sprintf("generatedtip_passive_%s_tooltipextended", strings.ToLower(sp[4]))
+			if len(data.Entries[splttp]) != 0 {
+				final[splttp] = data.Entries[splttp]
+			}
+			if len(data.Entries[pasttp]) != 0 {
+				final[pasttp] = data.Entries[pasttp]
 			}
 		}
 	}
