@@ -131,8 +131,10 @@ type VerticalFacing struct {
 }
 
 type GameCalculation struct {
-	Type         string        `mapstructure:"__type"`
-	FormulaParts []FormulaPart `mapstructure:"mFormulaParts"`
+	Type                    string        `mapstructure:"__type"`
+	FormulaParts            []FormulaPart `mapstructure:"mFormulaParts"`
+	ModifiedGameCalculation string        `mapstructure:"mModifiedGameCalculation,omitempty"`
+	Multiplier              Multiply      `mapstructure:"mMultiplier,omitempty"`
 }
 
 type FormulaPart struct {
@@ -151,6 +153,12 @@ type Breakpoint struct {
 	AdditionalBonusAtThisLevel float64 `mapstructure:"mAdditionalBonusAtThisLevel,omitempty"`
 	BonusPerLevelAtAndAfter    float64 `mapstructure:"mBonusPerLevelAtAndAfter,omitempty"`
 	Level                      int     `mapstructure:"mLevel"`
+}
+
+type Multiply struct {
+	Type      string  `mapstructure:"__type"`
+	Number    float64 `mapstructure:"mNumber,omitempty"`
+	DataValue string  `mapstructure:"mDataValue,omitempty"`
 }
 
 type TargetingTypeData struct {

@@ -52,7 +52,7 @@ func dataValues(ttp *string, spl []SpellDataValue) {
 				strValues[j] = fmt.Sprint(v)
 			}
 			new = strings.Join(strValues, "/")
-			n = strings.Replace(n, old, fmt.Sprintf("%s", new), -1)
+			n = strings.Replace(n, old, new, -1)
 
 			*ttp = n
 		}
@@ -65,7 +65,7 @@ func effectAmount(ttp *string, spl []SpellEffectAmount) {
 			// Handle Scaling values on strings
 			old := fmt.Sprintf("@Effect%dAmount%d@", ei+1, i)
 			new := fmt.Sprint(item)
-			n := strings.Replace(*ttp, old, fmt.Sprintf("%s", new), -1)
+			n := strings.Replace(*ttp, old, new, -1)
 
 			// Handle Single value on strings
 			old = fmt.Sprintf("@Effect%dAmount@", ei+1)
@@ -74,7 +74,7 @@ func effectAmount(ttp *string, spl []SpellEffectAmount) {
 				strValues[i] = fmt.Sprint(v)
 			}
 			new = strings.Join(strValues, "/")
-			n = strings.Replace(n, old, fmt.Sprintf("%s", new), -1)
+			n = strings.Replace(n, old, new, -1)
 
 			*ttp = n
 		}
