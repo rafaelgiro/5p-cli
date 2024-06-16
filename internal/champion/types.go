@@ -33,7 +33,7 @@ type SpellDataResource struct {
 	EffectAmount []SpellEffectAmount `mapstructure:"mEffectAmount"`
 	// ImgIconName                         []string                   `json:"mImgIconName"`
 	// MissileSpec                         MissileSpecification       `json:"mMissileSpec"`
-	// SpellCalculations                   map[string]GameCalculation `json:"mSpellCalculations"`
+	SpellCalculations map[string]GameCalculation `mapstructure:"mSpellCalculations"`
 	// SpellCooldownOrSealedQueueThreshold float64                    `json:"mSpellCooldownOrSealedQueueThreshold"`
 	// TargetingTypeData                   TargetingTypeData          `json:"mTargetingTypeData"`
 	Mana []float64 `mapstructure:"mana"`
@@ -131,16 +131,26 @@ type VerticalFacing struct {
 }
 
 type GameCalculation struct {
-	Type         string        `json:"__type"`
-	FormulaParts []FormulaPart `json:"mFormulaParts"`
+	Type         string        `mapstructure:"__type"`
+	FormulaParts []FormulaPart `mapstructure:"mFormulaParts"`
 }
 
 type FormulaPart struct {
-	Type        string   `json:"__type"`
-	DataValue   *string  `json:"mDataValue,omitempty"`
-	Coefficient *float64 `json:"mCoefficient,omitempty"`
-	EndValue    *float64 `json:"mEndValue,omitempty"`
-	StartValue  *float64 `json:"mStartValue,omitempty"`
+	Type                 string       `mapstructure:"__type"`
+	DataValue            string       `mapstructure:"mDataValue,omitempty"`
+	Coefficient          float64      `mapstructure:"mCoefficient,omitempty"`
+	EndValue             float64      `mapstructure:"mEndValue,omitempty"`
+	StartValue           float64      `mapstructure:"mStartValue,omitempty"`
+	Breakpoints          []Breakpoint `mapstructure:"mBreakpoints,omitempty"`
+	InitialBonusPerLevel float64      `mapstructure:"mInitialBonusPerLevel,omitempty"`
+	Level1Value          float64      `mapstructure:"mLevel1Value,omitempty"`
+}
+
+type Breakpoint struct {
+	Type                       string  `mapstructure:"__type"`
+	AdditionalBonusAtThisLevel float64 `mapstructure:"mAdditionalBonusAtThisLevel,omitempty"`
+	BonusPerLevelAtAndAfter    float64 `mapstructure:"mBonusPerLevelAtAndAfter,omitempty"`
+	Level                      int     `mapstructure:"mLevel"`
 }
 
 type TargetingTypeData struct {
