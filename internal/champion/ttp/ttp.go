@@ -1,4 +1,4 @@
-package champion
+package ttp
 
 import (
 	"fmt"
@@ -10,7 +10,8 @@ import (
 func HandleTooltip(ttp string, spl SpellDataResource) (string, error) {
 	c := initialCleanup(ttp)
 
-	dataValues(&c, spl.DataValues)
+	spl.DataValues.toTooltip(&c)
+
 	effectAmount(&c, spl.EffectAmount)
 	spellCalculations(&c, spl)
 	cooldown(&c, spl)
@@ -24,33 +25,6 @@ func initialCleanup(input string) string {
 	reSpecial := regexp.MustCompile(`@[^@]*?(?:Postfix|Prefix)@`)
 	result := reSpecial.ReplaceAllString(input, "")
 	return result
-}
-
-func dataValues(ttp *string, spl []SpellDataValue) {
-	for _, val := range spl {
-		for i, item := range val.Values {
-			// Handle Scaling values on strings
-			old := fmt.Sprintf("%s%d", val.Name, i)
-			new := fmt.Sprint(item)
-			n := strings.Replace(*ttp, old, new, -1)
-
-			// Handle Single value on strings
-			old = fmt.Sprintf("@%s@", val.Name)
-			strValues := make([]string, len(val.Values))
-			for j, v := range val.Values {
-				strValues[j] = fmt.Sprint(v)
-			}
-			new = strings.Join(strValues, "/")
-			n = strings.Replace(n, old, new, -1)
-			// *ttp = n
-
-			// Handle multiplication values
-			old = fmt.Sprintf("@%s*", val.Name)
-			n = strings.Replace(n, old, fmt.Sprintf("@%s*", new), -1)
-
-			*ttp = n
-		}
-	}
 }
 
 func effectAmount(ttp *string, spl []SpellEffectAmount) {

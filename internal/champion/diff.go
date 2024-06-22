@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/5pots-com/cli/internal/champion/ttp"
 	"github.com/5pots-com/cli/internal/common"
 	"github.com/mitchellh/mapstructure"
 	diff "github.com/yudai/gojsondiff"
@@ -21,6 +22,16 @@ type diffResult struct {
 	Live     map[string]string      `json:"live"`
 	PBE      map[string]string      `json:"pbe"`
 	Diff     map[string]interface{} `json:"diff"`
+}
+
+type JSONData struct {
+	Character map[string]ttp.SpellObject `mapstructure:"character"`
+	Tooltips  map[string]string          `mapstructure:"tooltips"`
+}
+
+type DownloadedData struct {
+	Character map[string]interface{} `json:"-"`
+	Tooltips  map[string]interface{} `json:"tooltips"`
 }
 
 var blacklist = []string{"yuumi"}
@@ -173,7 +184,7 @@ func mount(d JSONData) (map[string]string, error) {
 
 			spl := d.Character[k].Spell
 
-			v, err := HandleTooltip(tp, spl)
+			v, err := ttp.HandleTooltip(tp, spl)
 			if err != nil {
 				return map[string]string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
 			}

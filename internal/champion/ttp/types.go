@@ -1,14 +1,4 @@
-package champion
-
-type DownloadedData struct {
-	Character map[string]interface{} `json:"-"`
-	Tooltips  map[string]interface{} `json:"tooltips"`
-}
-
-type JSONData struct {
-	Character map[string]SpellObject `mapstructure:"character"`
-	Tooltips  map[string]string      `mapstructure:"tooltips"`
-}
+package ttp
 
 type SpellObject struct {
 	ScriptName string            `mapstructure:"mScriptName"`
@@ -19,16 +9,10 @@ type SpellDataResource struct {
 	CastRange         []float64                  `mapstructure:"castRange"`
 	CooldownTime      []float64                  `mapstructure:"cooldownTime"`
 	CastTime          float64                    `mapstructure:"mCastTime"`
-	DataValues        []SpellDataValue           `mapstructure:"mDataValues"`
+	DataValues        SpellValues                `mapstructure:"mDataValues"`
 	EffectAmount      []SpellEffectAmount        `mapstructure:"mEffectAmount"`
 	SpellCalculations map[string]GameCalculation `mapstructure:"mSpellCalculations"`
 	Mana              []float64                  `mapstructure:"mana"`
-}
-
-type SpellDataValue struct {
-	Type   string        `mapstructure:"__type"`
-	Name   string        `mapstructure:"mName"`
-	Values []interface{} `mapstructure:"mValues"`
 }
 
 type SpellEffectAmount struct {
