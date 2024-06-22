@@ -45,15 +45,15 @@ var diffChampionsCmd = &cobra.Command{
 				log.Fatalf("Failed to prepare diff file for %s on folder %s: %v", e.Name(), common.OutputFolder, err)
 			}
 
-			if len(res.Keys) != 0 {
-				ch, err := json.Marshal(res)
-				if err != nil {
-					log.Fatalf("failed to convert %s champion json: %v", c.Name, err)
-				}
-
-				d := fmt.Sprintf("%s/results", wd)
-				common.SaveToFile(d, fmt.Sprintf("%s.json", e.Name()), ch)
+			// if len(res.Keys) != 0 {
+			ch, err := json.Marshal(res)
+			if err != nil {
+				log.Fatalf("failed to convert %s champion json: %v", c.Name, err)
 			}
+
+			d := fmt.Sprintf("%s/results", wd)
+			common.SaveToFile(d, fmt.Sprintf("%s.json", e.Name()), ch)
+			// }
 
 		}
 

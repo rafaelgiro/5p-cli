@@ -16,29 +16,13 @@ type SpellObject struct {
 }
 
 type SpellDataResource struct {
-	// Type                                string                     `json:"__type"`
-	// AlwaysSnapFacing                    bool                       `json:"alwaysSnapFacing"`
-	CastRange    []float64 `mapstructure:"castRange"`
-	CooldownTime []float64 `mapstructure:"cooldownTime"`
-	// DelayCastOffsetPercent              float64                    `json:"delayCastOffsetPercent"`
-	// DelayTotalTimePercent               float64                    `json:"delayTotalTimePercent"`
-	// LuaOnMissileUpdateDistanceInterval  float64                    `json:"luaOnMissileUpdateDistanceInterval"`
-	// AffectsTypeFlags                    int                        `json:"mAffectsTypeFlags"`
-	// AnimationName                       string                     `json:"mAnimationName"`
-	// CantCancelWhileWindingUp            bool                       `json:"mCantCancelWhileWindingUp"`
-	CastTime float64 `mapstructure:"mCastTime"`
-	// CastType                            int                        `json:"mCastType"`
-	// ClientData                          SpellDataResourceClient    `json:"mClientData"`
-	DataValues   []SpellDataValue    `mapstructure:"mDataValues"`
-	EffectAmount []SpellEffectAmount `mapstructure:"mEffectAmount"`
-	// ImgIconName                         []string                   `json:"mImgIconName"`
-	// MissileSpec                         MissileSpecification       `json:"mMissileSpec"`
+	CastRange         []float64                  `mapstructure:"castRange"`
+	CooldownTime      []float64                  `mapstructure:"cooldownTime"`
+	CastTime          float64                    `mapstructure:"mCastTime"`
+	DataValues        []SpellDataValue           `mapstructure:"mDataValues"`
+	EffectAmount      []SpellEffectAmount        `mapstructure:"mEffectAmount"`
 	SpellCalculations map[string]GameCalculation `mapstructure:"mSpellCalculations"`
-	// SpellCooldownOrSealedQueueThreshold float64                    `json:"mSpellCooldownOrSealedQueueThreshold"`
-	// TargetingTypeData                   TargetingTypeData          `json:"mTargetingTypeData"`
-	Mana []float64 `mapstructure:"mana"`
-	// UseAnimatorFramerate                bool                       `json:"useAnimatorFramerate"`
-	// UnknownField                        bool                       `json:"{00f7e5bc}"`
+	Mana              []float64                  `mapstructure:"mana"`
 }
 
 type SpellDataValue struct {
@@ -48,93 +32,15 @@ type SpellDataValue struct {
 }
 
 type SpellEffectAmount struct {
-	Type  string    `json:"__type"`
-	Value []float64 `json:"value"`
-}
-
-type SpellDataResourceClient struct {
-	Type                string               `json:"__type"`
-	TargeterDefinitions []TargeterDefinition `json:"mTargeterDefinitions"`
-	TooltipData         TooltipInstanceSpell `json:"mTooltipData"`
-}
-
-type TooltipInstanceSpell struct {
-	Type       string              `json:"__type"`
-	Format     string              `json:"mFormat"`
-	Lists      TooltipInstanceList `json:"mLists"`
-	LocKeys    TooltipLocKeys      `json:"mLocKeys"`
-	ObjectName string              `json:"mObjectName"`
-}
-
-type TooltipInstanceList struct {
-	Type       string                       `json:"__type"`
-	Elements   []TooltipInstanceListElement `json:"elements"`
-	LevelCount int                          `json:"levelCount"`
-}
-
-type TooltipInstanceListElement struct {
-	NameOverride string `json:"nameOverride"`
-	Type         string `json:"type"`
-}
-
-type TooltipLocKeys struct {
-	KeyName                     string `json:"keyName"`
-	KeySummary                  string `json:"keySummary"`
-	KeyTooltip                  string `json:"keyTooltip"`
-	KeyTooltipExtendedBelowLine string `json:"keyTooltipExtendedBelowLine"`
-}
-
-type TargeterDefinition struct {
-	Type                   string                   `json:"__type"`
-	EndLocator             *DrawablePositionLocator `json:"endLocator,omitempty"`
-	LineStopsAtEndPosition bool                     `json:"lineStopsAtEndPosition,omitempty"`
-	LineWidth              *FloatPerSpellLevel      `json:"lineWidth,omitempty"`
-	OverrideBaseRange      *FloatPerSpellLevel      `json:"overrideBaseRange,omitempty"`
-	HideWithLineIndicator  bool                     `json:"hideWithLineIndicator,omitempty"`
-}
-
-type DrawablePositionLocator struct {
-	Type         string `json:"__type"`
-	BasePosition int    `json:"basePosition"`
-}
-
-type FloatPerSpellLevel struct {
-	Type           string    `json:"__type"`
-	PerLevelValues []float64 `json:"mPerLevelValues"`
-	ValueType      int       `json:"mValueType"`
-}
-
-type MissileSpecification struct {
-	Type              string             `json:"__type"`
-	Behaviors         []MissileBehavior  `json:"behaviors"`
-	MissileWidth      float64            `json:"mMissileWidth"`
-	MovementComponent FixedSpeedMovement `json:"movementComponent"`
-	VerticalFacing    VerticalFacing     `json:"verticalFacing"`
-}
-
-type MissileBehavior struct {
-	Type string `json:"__type"`
-}
-
-type FixedSpeedMovement struct {
-	Type                     string  `json:"__type"`
-	ProjectTargetToCastRange bool    `json:"mProjectTargetToCastRange"`
-	Speed                    float64 `json:"mSpeed"`
-	StartBoneName            string  `json:"mStartBoneName"`
-	TargetBoneName           string  `json:"mTargetBoneName"`
-	TracksTarget             bool    `json:"mTracksTarget"`
-	UseHeightOffsetAtEnd     bool    `json:"mUseHeightOffsetAtEnd"`
-}
-
-type VerticalFacing struct {
-	Type string `json:"__type"`
+	Type  string    `mapstructure:"__type"`
+	Value []float64 `mapstructure:"value"`
 }
 
 type GameCalculation struct {
 	Type                    string        `mapstructure:"__type"`
 	FormulaParts            []FormulaPart `mapstructure:"mFormulaParts"`
-	ModifiedGameCalculation string        `mapstructure:"mModifiedGameCalculation,omitempty"`
-	Multiplier              Multiply      `mapstructure:"mMultiplier,omitempty"`
+	ModifiedGameCalculation string        `mapstructure:"mModifiedGameCalculation"`
+	Multiplier              Multiply      `mapstructure:"mMultiplier"`
 }
 
 type FormulaPart struct {
@@ -159,8 +65,4 @@ type Multiply struct {
 	Type      string  `mapstructure:"__type"`
 	Number    float64 `mapstructure:"mNumber,omitempty"`
 	DataValue string  `mapstructure:"mDataValue,omitempty"`
-}
-
-type TargetingTypeData struct {
-	Type string `json:"__type"`
 }

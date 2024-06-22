@@ -1,0 +1,394 @@
+{
+  "Characters/TwistedFate/Spells/PickACardAbility/PickACard": {
+    "__type": "SpellObject",
+    "mScriptName": "PickACard",
+    "mSpell": {
+      "SpellEventToAudioEventSuffix": {
+        "12": "Play_sfx_TwistedFate_PickACard_OnCast"
+      },
+      "__type": "SpellDataResource",
+      "bIsToggleSpell": true,
+      "castConeDistance": 100,
+      "castFrame": 14.645000457763672,
+      "castRadius": [1000, 1000, 1000, 1000, 1000, 1000, 1000],
+      "castRange": [200, 200, 200, 200, 200, 200, 200],
+      "cooldownTime": [6, 6, 6, 6, 6, 6, 6],
+      "delayCastOffsetPercent": -0.15000000596046448,
+      "delayTotalTimePercent": -0.5,
+      "flags": 4,
+      "mAffectsTypeFlags": 9221,
+      "mAlternateName": "PickACard",
+      "mAnimationName": "Spell1",
+      "mCantCancelWhileWindingUp": true,
+      "mClientData": {
+        "__type": "SpellDataResourceClient",
+        "mTooltipData": {
+          "__type": "TooltipInstanceSpell",
+          "mFormat": "{loveusion}",
+          "mLists": {
+            "LevelUp": {
+              "__type": "TooltipInstanceList",
+              "elements": [
+                {
+                  "__type": "TooltipInstanceListElement",
+                  "nameOverride": "Spell_ListType_TwistedFateWBlueDamage",
+                  "type": "Effect%dAmount",
+                  "typeIndex": 1
+                },
+                {
+                  "__type": "TooltipInstanceListElement",
+                  "nameOverride": "Spell_ListType_TwistedFateWBlueMana",
+                  "type": "Effect%dAmount",
+                  "typeIndex": 6
+                },
+                {
+                  "__type": "TooltipInstanceListElement",
+                  "nameOverride": "Spell_ListType_TwistedFateWRedDamage",
+                  "type": "Effect%dAmount",
+                  "typeIndex": 4
+                },
+                {
+                  "Style": 1,
+                  "__type": "TooltipInstanceListElement",
+                  "nameOverride": "Spell_ListType_TwistedFateWRedSlow",
+                  "type": "Effect%dAmount",
+                  "typeIndex": 2
+                },
+                {
+                  "__type": "TooltipInstanceListElement",
+                  "nameOverride": "Spell_ListType_TwistedFateWGoldDamage",
+                  "type": "Effect%dAmount",
+                  "typeIndex": 5
+                },
+                {
+                  "__type": "TooltipInstanceListElement",
+                  "nameOverride": "Spell_ListType_TwistedFateWGoldStun",
+                  "type": "Effect%dAmount",
+                  "typeIndex": 3
+                },
+                {
+                  "__type": "TooltipInstanceListElement",
+                  "type": "Cost"
+                }
+              ],
+              "levelCount": 5
+            }
+          },
+          "mLocKeys": {
+            "keyName": "Spell_PickACard_Name",
+            "keySummary": "Spell_PickACard_Summary",
+            "keyTooltip": "Spell_PickACard_Tooltip",
+            "keyTooltipExtended": "Spell_PickAAcard_TooltipExtended"
+          },
+          "mObjectName": "PickACard"
+        }
+      },
+      "mCoefficient": 0.5,
+      "mCoefficient2": 1,
+      "mDataValues": [
+        {
+          "__type": "SpellDataValue",
+          "mName": "BlueBase",
+          "mValues": [20, 40, 60, 80, 100, 120, 140]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "RedBase",
+          "mValues": [15, 30, 45, 60, 75, 90, 105]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "GoldBase",
+          "mValues": [7.5, 15, 22.5, 30, 37.5, 45, 52.5]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "BlueCritMultiplier",
+          "mValues": [
+            0.574999988079071, 0.574999988079071, 0.574999988079071,
+            0.574999988079071, 0.574999988079071, 0.574999988079071,
+            0.574999988079071
+          ]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "RedCritMultiplier",
+          "mValues": [
+            0.3499999940395355, 0.3499999940395355, 0.3499999940395355,
+            0.3499999940395355, 0.3499999940395355, 0.3499999940395355,
+            0.3499999940395355
+          ]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "GoldCritMultiplier",
+          "mValues": [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "ttBlueAP",
+          "mValues": [1, 1, 1, 1, 1, 1, 1]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "ttRedAP",
+          "mValues": [
+            0.699999988079071, 0.699999988079071, 0.699999988079071,
+            0.699999988079071, 0.699999988079071, 0.699999988079071,
+            0.699999988079071
+          ]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "ttGoldAP",
+          "mValues": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "ttAD",
+          "mValues": [1, 1, 1, 1, 1, 1, 1]
+        }
+      ],
+      "mEffectAmount": [
+        {
+          "__type": "SpellEffectAmount",
+          "value": [20, 40, 60, 80, 100, 120, 140]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [25, 30, 35, 40, 45, 50, 55]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [0.75, 1, 1.25, 1.5, 1.75, 2, 2.25]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [15, 30, 45, 60, 75, 90, 105]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [7.5, 15, 22.5, 30, 37.5, 45, 52.5]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [70, 70, 90, 110, 130, 150, 165]
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        }
+      ],
+      "mImgIconName": [
+        "ASSETS/Characters/TwistedFate/HUD/Icons2D/CardMaster_FatesGambit.dds"
+      ],
+      "mRequiredUnitTags": {
+        "__type": "ObjectTags",
+        "mObjectTagList": ["{ea595ca6}"]
+      },
+      "mSpellCalculations": {
+        "BlueDamage": {
+          "StaticTooltipCalculationDisplay": 6,
+          "__type": "GameCalculation",
+          "mExpandedTooltipCalculationDisplay": 0,
+          "mFormulaParts": [
+            {
+              "__type": "NamedDataValueCalculationPart",
+              "mDataValue": "BlueBase"
+            },
+            {
+              "__type": "StatByCoefficientCalculationPart",
+              "mCoefficient": 1,
+              "mStat": 2
+            },
+            {
+              "__type": "StatByCoefficientCalculationPart",
+              "mCoefficient": 1
+            },
+            {
+              "__type": "StatBySubPartCalculationPart",
+              "mStat": 7,
+              "mSubpart": {
+                "__type": "ProductOfSubPartsCalculationPart",
+                "mPart1": {
+                  "__type": "NamedDataValueCalculationPart",
+                  "mDataValue": "BlueCritMultiplier"
+                },
+                "mPart2": {
+                  "__type": "SumOfSubPartsCalculationPart",
+                  "mSubparts": [
+                    {
+                      "__type": "NamedDataValueCalculationPart",
+                      "mDataValue": "BlueBase"
+                    },
+                    {
+                      "__type": "StatByCoefficientCalculationPart",
+                      "mCoefficient": 1,
+                      "mStat": 2
+                    },
+                    {
+                      "__type": "StatByCoefficientCalculationPart",
+                      "mCoefficient": 1
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "mSimpleTooltipCalculationDisplay": 6
+        },
+        "GoldDamage": {
+          "StaticTooltipCalculationDisplay": 6,
+          "__type": "GameCalculation",
+          "mExpandedTooltipCalculationDisplay": 0,
+          "mFormulaParts": [
+            {
+              "__type": "NamedDataValueCalculationPart",
+              "mDataValue": "GoldBase"
+            },
+            {
+              "__type": "StatByCoefficientCalculationPart",
+              "mCoefficient": 1,
+              "mStat": 2
+            },
+            {
+              "__type": "StatByCoefficientCalculationPart",
+              "mCoefficient": 0.5
+            },
+            {
+              "__type": "StatBySubPartCalculationPart",
+              "mStat": 7,
+              "mSubpart": {
+                "__type": "ProductOfSubPartsCalculationPart",
+                "mPart1": {
+                  "__type": "NamedDataValueCalculationPart",
+                  "mDataValue": "GoldCritMultiplier"
+                },
+                "mPart2": {
+                  "__type": "SumOfSubPartsCalculationPart",
+                  "mSubparts": [
+                    {
+                      "__type": "NamedDataValueCalculationPart",
+                      "mDataValue": "GoldBase"
+                    },
+                    {
+                      "__type": "StatByCoefficientCalculationPart",
+                      "mCoefficient": 1,
+                      "mStat": 2
+                    },
+                    {
+                      "__type": "StatByCoefficientCalculationPart",
+                      "mCoefficient": 0.5
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "mSimpleTooltipCalculationDisplay": 6
+        },
+        "RedDamage": {
+          "StaticTooltipCalculationDisplay": 6,
+          "__type": "GameCalculation",
+          "mExpandedTooltipCalculationDisplay": 0,
+          "mFormulaParts": [
+            {
+              "__type": "NamedDataValueCalculationPart",
+              "mDataValue": "RedBase"
+            },
+            {
+              "__type": "StatByCoefficientCalculationPart",
+              "mCoefficient": 1,
+              "mStat": 2
+            },
+            {
+              "__type": "StatByCoefficientCalculationPart",
+              "mCoefficient": 0.699999988079071
+            },
+            {
+              "__type": "StatBySubPartCalculationPart",
+              "mStat": 7,
+              "mSubpart": {
+                "__type": "ProductOfSubPartsCalculationPart",
+                "mPart1": {
+                  "__type": "NamedDataValueCalculationPart",
+                  "mDataValue": "RedCritMultiplier"
+                },
+                "mPart2": {
+                  "__type": "SumOfSubPartsCalculationPart",
+                  "mSubparts": [
+                    {
+                      "__type": "NamedDataValueCalculationPart",
+                      "mDataValue": "RedBase"
+                    },
+                    {
+                      "__type": "StatByCoefficientCalculationPart",
+                      "mCoefficient": 1,
+                      "mStat": 2
+                    },
+                    {
+                      "__type": "StatByCoefficientCalculationPart",
+                      "mCoefficient": 0.699999988079071
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "mSimpleTooltipCalculationDisplay": 6
+        },
+        "ttBlueDamage": {
+          "StaticTooltipCalculationDisplay": 5,
+          "__type": "GameCalculationModified",
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mModifiedGameCalculation": "BlueDamage",
+          "mMultiplier": {
+            "__type": "NumberCalculationPart",
+            "mNumber": 1
+          },
+          "mSimpleTooltipCalculationDisplay": 5
+        },
+        "ttGoldDamage": {
+          "StaticTooltipCalculationDisplay": 5,
+          "__type": "GameCalculationModified",
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mModifiedGameCalculation": "GoldDamage",
+          "mMultiplier": {
+            "__type": "NumberCalculationPart",
+            "mNumber": 1
+          },
+          "mSimpleTooltipCalculationDisplay": 5
+        },
+        "ttRedDamage": {
+          "StaticTooltipCalculationDisplay": 5,
+          "__type": "GameCalculationModified",
+          "mExpandedTooltipCalculationDisplay": 5,
+          "mModifiedGameCalculation": "RedDamage",
+          "mMultiplier": {
+            "__type": "NumberCalculationPart",
+            "mNumber": 1
+          },
+          "mSimpleTooltipCalculationDisplay": 5
+        }
+      },
+      "mSpellTags": [
+        "Trait_ImmobilizingCCSpell",
+        "PositiveEffect_EmpowerAttack"
+      ],
+      "mTargetingTypeData": {
+        "__type": "Self"
+      },
+      "mana": [50, 55, 60, 65, 70, 75],
+      "missileSpeed": 20,
+      "selectionPriority": 1
+    }
+  }
+}

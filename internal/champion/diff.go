@@ -81,6 +81,7 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 
 	keys := []string{}
 	name := ""
+
 	for key := range diffs {
 		if strings.Split(key, "/")[0] == "Characters" && len(name) == 0 {
 			name = strings.Split(key, "/")[1]
@@ -91,10 +92,10 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 		}
 	}
 
-	if len(keys) == 0 {
-		fmt.Printf("No changes found for %s\n", c.Name)
-		return diffResult{}, nil
-	}
+	// if len(keys) == 0 {
+	// 	fmt.Printf("No changes found for %s\n", c.Name)
+	// 	return diffResult{}, nil
+	// }
 
 	live, err := decode(ld)
 	if err != nil {
@@ -106,12 +107,12 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 		return diffResult{}, fmt.Errorf("failed to decode %s PBE files: %v", dir, err)
 	}
 
-	lttps, err := mount(live, diffs)
+	lttps, err := mount(live)
 	if err != nil {
 		return diffResult{}, fmt.Errorf("failed to read live tooltips: %v", err)
 	}
 
-	pttps, err := mount(pbe, diffs)
+	pttps, err := mount(pbe)
 	if err != nil {
 		return diffResult{}, fmt.Errorf("failed to read PBE tooltips: %v", err)
 	}
@@ -154,10 +155,10 @@ func decode(d []byte) (JSONData, error) {
 	return result, nil
 }
 
-func mount(d JSONData, diffs map[string]interface{}) (map[string]string, error) {
+func mount(d JSONData) (map[string]string, error) {
 	ts := map[string]string{}
 
-	for k := range diffs {
+	for k := range d.Character {
 		sp := strings.Split(k, "/")
 
 		// Handle spell tooltip

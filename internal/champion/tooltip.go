@@ -3,6 +3,7 @@ package champion
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -13,6 +14,7 @@ func HandleTooltip(ttp string, spl SpellDataResource) (string, error) {
 	effectAmount(&c, spl.EffectAmount)
 	spellCalculations(&c, spl)
 	cooldown(&c, spl)
+	cost(&c, spl)
 
 	f := finalCleanup(c)
 	return f, nil
@@ -21,19 +23,6 @@ func HandleTooltip(ttp string, spl SpellDataResource) (string, error) {
 func initialCleanup(input string) string {
 	reSpecial := regexp.MustCompile(`@[^@]*?(?:Postfix|Prefix)@`)
 	result := reSpecial.ReplaceAllString(input, "")
-	result = strings.ReplaceAll(result, "*100.000000", "")
-	result = strings.ReplaceAll(result, "*100", "")
-	return result
-}
-
-func finalCleanup(input string) string {
-	re := regexp.MustCompile(`@(\d+(\.\d+)?(?:/\d+(\.\d+)?)*)@`)
-	result := re.ReplaceAllStringFunc(input, func(match string) string {
-		numStr := match[1 : len(match)-1]
-
-		return numStr
-	})
-
 	return result
 }
 
@@ -53,6 +42,11 @@ func dataValues(ttp *string, spl []SpellDataValue) {
 			}
 			new = strings.Join(strValues, "/")
 			n = strings.Replace(n, old, new, -1)
+			// *ttp = n
+
+			// Handle multiplication values
+			old = fmt.Sprintf("@%s*", val.Name)
+			n = strings.Replace(n, old, fmt.Sprintf("@%s*", new), -1)
 
 			*ttp = n
 		}
@@ -67,6 +61,11 @@ func effectAmount(ttp *string, spl []SpellEffectAmount) {
 			new := fmt.Sprint(item)
 			n := strings.Replace(*ttp, old, new, -1)
 
+			// Additional replace to handle multiplication values
+			old = fmt.Sprintf("Effect%dAmount%d", ei+1, i)
+			new = fmt.Sprint(item)
+			n = strings.Replace(n, old, new, -1)
+
 			// Handle Single value on strings
 			old = fmt.Sprintf("@Effect%dAmount@", ei+1)
 			strValues := make([]string, len(val.Value))
@@ -79,6 +78,21 @@ func effectAmount(ttp *string, spl []SpellEffectAmount) {
 			*ttp = n
 		}
 	}
+}
+
+func cost(ttp *string, spl SpellDataResource) {
+	costs := []string{}
+
+	for i, cost := range spl.Mana {
+		old := fmt.Sprintf("Cost%d", i)
+		new := fmt.Sprint(cost)
+		n := strings.Replace(*ttp, old, new, -1)
+		costs = append(costs, new)
+		*ttp = n
+	}
+
+	n := strings.Replace(*ttp, "@Cost@", strings.Join(costs, "/"), -1)
+	*ttp = n
 }
 
 func cooldown(ttp *string, spl SpellDataResource) {
@@ -98,12 +112,29 @@ func cooldown(ttp *string, spl SpellDataResource) {
 
 func spellCalculations(ttp *string, spl SpellDataResource) {
 	for key, val := range spl.SpellCalculations {
-		for _, fp := range val.FormulaParts {
-			if len(fp.DataValue) != 0 {
-				dataValCalc(ttp, key, fp.DataValue, spl.DataValues)
-			} else if fp.Breakpoints != nil {
-				breakpoints(ttp, key, fp)
+		if val.FormulaParts != nil {
+			formulaParts(ttp, key, val.FormulaParts, spl.DataValues)
+		}
+		if val.ModifiedGameCalculation != "" {
+			if val.Multiplier.Number != 0 {
+				// TODO
+				// multiplierNumber(ttp, key, val.ModifiedGameCalculation, val)
 			}
+			if val.Multiplier.DataValue != "" {
+				// TODO
+				// multiplierData(ttp, key, val.ModifiedGameCalculation, spl, val.Multiplier)
+			}
+		}
+
+	}
+}
+
+func formulaParts(ttp *string, key string, fps []FormulaPart, spl []SpellDataValue) {
+	for _, fp := range fps {
+		if len(fp.DataValue) != 0 {
+			dataValCalc(ttp, key, fp.DataValue, spl)
+		} else if fp.Breakpoints != nil {
+			breakpoints(ttp, key, fp)
 		}
 	}
 }
@@ -145,4 +176,106 @@ func breakpoints(ttp *string, ttpKey string, fp FormulaPart) {
 
 func arrayToString(a []float64, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
+}
+
+func finalCleanup(input string) string {
+	re := regexp.MustCompile(`@(\d+(\.\d+)?(?:/\d+(\.\d+)?)*)@`)
+	result := re.ReplaceAllStringFunc(input, func(match string) string {
+		numStr := match[1 : len(match)-1]
+
+		return numStr
+	})
+	r, err := calculate(result)
+	if err != nil {
+
+	}
+
+	result = r
+
+	return result
+}
+
+func floatValues(dataVals []interface{}) ([]float64, error) {
+	var floatVals []float64
+	for _, val := range dataVals {
+		switch v := val.(type) {
+		case float64:
+			floatVals = append(floatVals, v)
+		case string:
+			f, err := strconv.ParseFloat(v, 64)
+			if err != nil {
+				return []float64{}, fmt.Errorf("Error converting string to float:", err)
+
+			}
+			floatVals = append(floatVals, f)
+		default:
+			return []float64{}, fmt.Errorf("Unsupported data type in dataVals")
+		}
+	}
+
+	return floatVals, nil
+}
+
+// formatDecimal formats a floating point number string to two decimal places.
+func formatDecimal(number string) (string, error) {
+	// Convert the string to float64
+	value, err := strconv.ParseFloat(number, 64)
+	if err != nil {
+		return "", err
+	}
+	// Format the value to two decimal places
+	return fmt.Sprintf("%.2f", value), nil
+}
+
+// evaluateExpression takes an expression string, evaluates it, and returns the result as a string.
+func evaluateExpression(expression string) (string, error) {
+	// Remove the `@` characters
+	expression = expression[1 : len(expression)-1]
+	// Split the expression into its components (assuming the format is `a*b`)
+	parts := regexp.MustCompile(`\*`).Split(expression, -1)
+	if len(parts) != 2 {
+		return "", fmt.Errorf("invalid expression format")
+	}
+	// Convert the parts to float64
+	a, err := strconv.ParseFloat(parts[0], 64)
+	if err != nil {
+		return "", err
+	}
+	b, err := strconv.ParseFloat(parts[1], 64)
+	if err != nil {
+		return "", err
+	}
+	// Perform the multiplication
+	result := a * b
+	// Return the result as a string formatted to 2 decimal places
+	return fmt.Sprintf("%.2f", result), nil
+}
+
+// processString takes the entire input string, formats all decimal numbers, evaluates expressions between `@`, and replaces them with their results.
+func calculate(input string) (string, error) {
+	// Regular expression to find all decimal numbers
+	reDecimal := regexp.MustCompile(`\d+\.\d+`)
+	// Function to replace each decimal match with its formatted version
+	result := reDecimal.ReplaceAllStringFunc(input, func(match string) string {
+		formatted, err := formatDecimal(match)
+		if err != nil {
+			// If there's an error, return the original match
+			return match
+		}
+		return formatted
+	})
+
+	// Regular expression to find expressions between `@`
+	reExpression := regexp.MustCompile(`@[^@]*@`)
+	// Function to replace each expression match with its evaluated version
+	result = reExpression.ReplaceAllStringFunc(result, func(match string) string {
+		evaluated, err := evaluateExpression(match)
+		if err != nil {
+			// If there's an error, return the original match
+			return match
+		}
+		return evaluated
+	})
+
+	return result, nil
 }
