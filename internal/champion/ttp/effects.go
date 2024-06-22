@@ -46,5 +46,11 @@ func (ef Effect) combine(ttp *Tooltip, ei int) {
 	old := fmt.Sprintf("@Effect%dAmount@", ei+1)
 	new := strings.Join(strValues, "/")
 	n := strings.Replace(ttp.ToString(), old, new, -1)
+
+	// Additional replace to handle multiplication values @Effect1Ammount*100@
+	old = fmt.Sprintf("Effect%dAmount", ei+1)
+	new = strings.Join(strValues, "/")
+	n = strings.Replace(n, old, new, -1)
+
 	*ttp = Tooltip(n)
 }

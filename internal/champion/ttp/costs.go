@@ -13,9 +13,11 @@ func (c Costs) toTooltip(ttp *Tooltip) {
 	costs := []string{}
 
 	for i, cost := range c {
-		old := fmt.Sprintf("Cost%d", i)
+		old := fmt.Sprintf("@Cost%d@", i)
 		new := fmt.Sprint(cost)
 		n := strings.Replace(ttp.ToString(), old, new, -1)
+		old = fmt.Sprintf("@BaseCost%d@", i)
+		n = strings.Replace(n, old, new, -1)
 		costs = append(costs, new)
 		*ttp = Tooltip(n)
 	}

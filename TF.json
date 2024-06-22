@@ -1,118 +1,80 @@
 {
-  "Characters/TwistedFate/Spells/PickACardAbility/PickACard": {
+  "Characters/Varus/Spells/VarusWAbility/VarusW": {
     "__type": "SpellObject",
-    "mScriptName": "PickACard",
+    "mBuff": {
+      "__type": "BuffData",
+      "mDescription": "game_buff_tooltip_VarusW"
+    },
+    "mScriptName": "VarusW",
     "mSpell": {
-      "SpellEventToAudioEventSuffix": {
-        "12": "Play_sfx_TwistedFate_PickACard_OnCast"
-      },
       "__type": "SpellDataResource",
       "bIsToggleSpell": true,
+      "canCastWhileDisabled": true,
       "castConeDistance": 100,
-      "castFrame": 14.645000457763672,
-      "castRadius": [1000, 1000, 1000, 1000, 1000, 1000, 1000],
-      "castRange": [200, 200, 200, 200, 200, 200, 200],
-      "cooldownTime": [6, 6, 6, 6, 6, 6, 6],
-      "delayCastOffsetPercent": -0.15000000596046448,
+      "castFrame": 1.9800000190734863,
+      "castRadius": [210, 210, 210, 210, 210, 210, 210],
+      "castRange": [10000, 10000, 10000, 10000, 10000, 10000, 10000],
+      "castRangeDisplayOverride": [750, 750, 750, 750, 750, 750, 750],
+      "cooldownTime": [40, 40, 40, 40, 40, 40, 40],
+      "delayCastOffsetPercent": -0.5,
       "delayTotalTimePercent": -0.5,
       "flags": 4,
-      "mAffectsTypeFlags": 9221,
-      "mAlternateName": "PickACard",
-      "mAnimationName": "Spell1",
+      "mAffectsTypeFlags": 13327,
+      "mAlternateName": "VarusW",
+      "mAnimationName": "",
       "mCantCancelWhileWindingUp": true,
-      "mClientData": {
-        "__type": "SpellDataResourceClient",
-        "mTooltipData": {
-          "__type": "TooltipInstanceSpell",
-          "mFormat": "{loveusion}",
-          "mLists": {
-            "LevelUp": {
-              "__type": "TooltipInstanceList",
-              "elements": [
-                {
-                  "__type": "TooltipInstanceListElement",
-                  "nameOverride": "Spell_ListType_TwistedFateWBlueDamage",
-                  "type": "Effect%dAmount",
-                  "typeIndex": 1
-                },
-                {
-                  "__type": "TooltipInstanceListElement",
-                  "nameOverride": "Spell_ListType_TwistedFateWBlueMana",
-                  "type": "Effect%dAmount",
-                  "typeIndex": 6
-                },
-                {
-                  "__type": "TooltipInstanceListElement",
-                  "nameOverride": "Spell_ListType_TwistedFateWRedDamage",
-                  "type": "Effect%dAmount",
-                  "typeIndex": 4
-                },
-                {
-                  "Style": 1,
-                  "__type": "TooltipInstanceListElement",
-                  "nameOverride": "Spell_ListType_TwistedFateWRedSlow",
-                  "type": "Effect%dAmount",
-                  "typeIndex": 2
-                },
-                {
-                  "__type": "TooltipInstanceListElement",
-                  "nameOverride": "Spell_ListType_TwistedFateWGoldDamage",
-                  "type": "Effect%dAmount",
-                  "typeIndex": 5
-                },
-                {
-                  "__type": "TooltipInstanceListElement",
-                  "nameOverride": "Spell_ListType_TwistedFateWGoldStun",
-                  "type": "Effect%dAmount",
-                  "typeIndex": 3
-                },
-                {
-                  "__type": "TooltipInstanceListElement",
-                  "type": "Cost"
-                }
-              ],
-              "levelCount": 5
-            }
-          },
-          "mLocKeys": {
-            "keyName": "Spell_PickACard_Name",
-            "keySummary": "Spell_PickACard_Summary",
-            "keyTooltip": "Spell_PickACard_Tooltip",
-            "keyTooltipExtended": "Spell_PickAAcard_TooltipExtended"
-          },
-          "mObjectName": "PickACard"
-        }
-      },
-      "mCoefficient": 0.5,
-      "mCoefficient2": 1,
       "mDataValues": [
         {
           "__type": "SpellDataValue",
-          "mName": "BlueBase",
-          "mValues": [20, 40, 60, 80, 100, 120, 140]
+          "mName": "VarusWDebuffDuration",
+          "mValues": [6, 6, 6, 6, 6, 6, 6]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "RedBase",
-          "mValues": [15, 30, 45, 60, 75, 90, 105]
+          "mName": "VarusWMaxStacks",
+          "mValues": [3, 3, 3, 3, 3, 3, 3]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "GoldBase",
-          "mValues": [7.5, 15, 22.5, 30, 37.5, 45, 52.5]
+          "mName": "MaxMonsterDamage",
+          "mValues": [120, 120, 120, 120, 120, 120, 120]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "BlueCritMultiplier",
+          "mName": "BasePercentHPPerStack",
           "mValues": [
-            0.574999988079071, 0.574999988079071, 0.574999988079071,
-            0.574999988079071, 0.574999988079071, 0.574999988079071,
-            0.574999988079071
+            0.02500000037252903, 0.029999999329447746, 0.03500000014901161,
+            0.03999999910593033, 0.04500000178813934, 0.05000000074505806,
+            0.054999999701976776
           ]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "RedCritMultiplier",
+          "mName": "QEmpowerMonsterCap",
+          "mValues": [360, 360, 360, 360, 360, 360, 360]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "VarusWOnHitDamage",
+          "mValues": [0, 7, 14, 21, 28, 35, 42]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "CDRPerBlightStack",
+          "mValues": [
+            0.12999999523162842, 0.12999999523162842, 0.12999999523162842,
+            0.12999999523162842, 0.12999999523162842, 0.12999999523162842,
+            0.12999999523162842
+          ]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "VarusWMaxChargeHPDamage",
+          "mValues": [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "OnHitRatio",
           "mValues": [
             0.3499999940395355, 0.3499999940395355, 0.3499999940395355,
             0.3499999940395355, 0.3499999940395355, 0.3499999940395355,
@@ -121,58 +83,41 @@
         },
         {
           "__type": "SpellDataValue",
-          "mName": "GoldCritMultiplier",
-          "mValues": [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
-        },
-        {
-          "__type": "SpellDataValue",
-          "mName": "ttBlueAP",
-          "mValues": [1, 1, 1, 1, 1, 1, 1]
-        },
-        {
-          "__type": "SpellDataValue",
-          "mName": "ttRedAP",
+          "mName": "WQHealthDamage",
           "mValues": [
-            0.699999988079071, 0.699999988079071, 0.699999988079071,
-            0.699999988079071, 0.699999988079071, 0.699999988079071,
-            0.699999988079071
+            0.03999999910593033, 0.05999999865889549, 0.07999999821186066,
+            0.10000000149011612, 0.11999999731779099, 0.14000000059604645,
+            0.1599999964237213
+          ]
+        }
+      ],
+      "mDoesntBreakChannels": true,
+      "mEffectAmount": [
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [
+            0.02500000037252903, 0.029999999329447746, 0.03500000014901161,
+            0.03999999910593033, 0.04500000178813934, 0.05000000074505806,
+            0.054999999701976776
           ]
         },
         {
-          "__type": "SpellDataValue",
-          "mName": "ttGoldAP",
-          "mValues": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-        },
-        {
-          "__type": "SpellDataValue",
-          "mName": "ttAD",
-          "mValues": [1, 1, 1, 1, 1, 1, 1]
-        }
-      ],
-      "mEffectAmount": [
-        {
           "__type": "SpellEffectAmount",
-          "value": [20, 40, 60, 80, 100, 120, 140]
+          "value": [6, 6, 6, 6, 6, 6, 6]
         },
         {
           "__type": "SpellEffectAmount",
-          "value": [25, 30, 35, 40, 45, 50, 55]
+          "value": [3, 3, 3, 3, 3, 3, 3]
         },
         {
           "__type": "SpellEffectAmount",
-          "value": [0.75, 1, 1.25, 1.5, 1.75, 2, 2.25]
+          "value": [120, 120, 120, 120, 120, 120, 120]
         },
         {
-          "__type": "SpellEffectAmount",
-          "value": [15, 30, 45, 60, 75, 90, 105]
-        },
-        {
-          "__type": "SpellEffectAmount",
-          "value": [7.5, 15, 22.5, 30, 37.5, 45, 52.5]
-        },
-        {
-          "__type": "SpellEffectAmount",
-          "value": [70, 70, 90, 110, 130, 150, 165]
+          "__type": "SpellEffectAmount"
         },
         {
           "__type": "SpellEffectAmount"
@@ -187,208 +132,90 @@
           "__type": "SpellEffectAmount"
         }
       ],
+      "mFloatVarsDecimals": [1, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      "mHitBoneName": "head",
       "mImgIconName": [
-        "ASSETS/Characters/TwistedFate/HUD/Icons2D/CardMaster_FatesGambit.dds"
+        "ASSETS/Characters/Varus/HUD/Icons2D/VarusW.dds",
+        "ASSETS/Characters/Varus/HUD/Icons2D/VarusW2.dds"
       ],
+      "mKeywordWhenAcquired": "VarusW",
+      "mLineWidth": 50,
       "mRequiredUnitTags": {
         "__type": "ObjectTags",
         "mObjectTagList": ["{ea595ca6}"]
       },
       "mSpellCalculations": {
-        "BlueDamage": {
-          "StaticTooltipCalculationDisplay": 6,
+        "MaxPercentHPPerStack": {
+          "__type": "GameCalculationModified",
+          "mModifiedGameCalculation": "PercentHPPerStack",
+          "mMultiplier": {
+            "__type": "NumberCalculationPart",
+            "mNumber": 3
+          },
+          "tooltipOnly": true
+        },
+        "MaxQEmpowerPercentHP": {
+          "__type": "GameCalculationModified",
+          "mModifiedGameCalculation": "QEmpowerPercentHP",
+          "mMultiplier": {
+            "__type": "NamedDataValueCalculationPart",
+            "mDataValue": "VarusWMaxChargeHPDamage"
+          }
+        },
+        "OnHitDamage": {
           "__type": "GameCalculation",
-          "mExpandedTooltipCalculationDisplay": 0,
           "mFormulaParts": [
             {
               "__type": "NamedDataValueCalculationPart",
-              "mDataValue": "BlueBase"
+              "mDataValue": "VarusWOnHitDamage"
             },
             {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 1,
-              "mStat": 2
-            },
-            {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 1
-            },
-            {
-              "__type": "StatBySubPartCalculationPart",
-              "mStat": 7,
-              "mSubpart": {
-                "__type": "ProductOfSubPartsCalculationPart",
-                "mPart1": {
-                  "__type": "NamedDataValueCalculationPart",
-                  "mDataValue": "BlueCritMultiplier"
-                },
-                "mPart2": {
-                  "__type": "SumOfSubPartsCalculationPart",
-                  "mSubparts": [
-                    {
-                      "__type": "NamedDataValueCalculationPart",
-                      "mDataValue": "BlueBase"
-                    },
-                    {
-                      "__type": "StatByCoefficientCalculationPart",
-                      "mCoefficient": 1,
-                      "mStat": 2
-                    },
-                    {
-                      "__type": "StatByCoefficientCalculationPart",
-                      "mCoefficient": 1
-                    }
-                  ]
-                }
-              }
+              "__type": "StatByNamedDataValueCalculationPart",
+              "mDataValue": "OnHitRatio"
             }
-          ],
-          "mSimpleTooltipCalculationDisplay": 6
+          ]
         },
-        "GoldDamage": {
-          "StaticTooltipCalculationDisplay": 6,
+        "QEmpowerPercentHP": {
           "__type": "GameCalculation",
-          "mExpandedTooltipCalculationDisplay": 0,
+          "mDisplayAsPercent": true,
           "mFormulaParts": [
             {
               "__type": "NamedDataValueCalculationPart",
-              "mDataValue": "GoldBase"
-            },
-            {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 1,
-              "mStat": 2
-            },
-            {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 0.5
-            },
-            {
-              "__type": "StatBySubPartCalculationPart",
-              "mStat": 7,
-              "mSubpart": {
-                "__type": "ProductOfSubPartsCalculationPart",
-                "mPart1": {
-                  "__type": "NamedDataValueCalculationPart",
-                  "mDataValue": "GoldCritMultiplier"
-                },
-                "mPart2": {
-                  "__type": "SumOfSubPartsCalculationPart",
-                  "mSubparts": [
-                    {
-                      "__type": "NamedDataValueCalculationPart",
-                      "mDataValue": "GoldBase"
-                    },
-                    {
-                      "__type": "StatByCoefficientCalculationPart",
-                      "mCoefficient": 1,
-                      "mStat": 2
-                    },
-                    {
-                      "__type": "StatByCoefficientCalculationPart",
-                      "mCoefficient": 0.5
-                    }
-                  ]
-                }
-              }
+              "mDataValue": "WQHealthDamage"
             }
-          ],
-          "mSimpleTooltipCalculationDisplay": 6
-        },
-        "RedDamage": {
-          "StaticTooltipCalculationDisplay": 6,
-          "__type": "GameCalculation",
-          "mExpandedTooltipCalculationDisplay": 0,
-          "mFormulaParts": [
-            {
-              "__type": "NamedDataValueCalculationPart",
-              "mDataValue": "RedBase"
-            },
-            {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 1,
-              "mStat": 2
-            },
-            {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 0.699999988079071
-            },
-            {
-              "__type": "StatBySubPartCalculationPart",
-              "mStat": 7,
-              "mSubpart": {
-                "__type": "ProductOfSubPartsCalculationPart",
-                "mPart1": {
-                  "__type": "NamedDataValueCalculationPart",
-                  "mDataValue": "RedCritMultiplier"
-                },
-                "mPart2": {
-                  "__type": "SumOfSubPartsCalculationPart",
-                  "mSubparts": [
-                    {
-                      "__type": "NamedDataValueCalculationPart",
-                      "mDataValue": "RedBase"
-                    },
-                    {
-                      "__type": "StatByCoefficientCalculationPart",
-                      "mCoefficient": 1,
-                      "mStat": 2
-                    },
-                    {
-                      "__type": "StatByCoefficientCalculationPart",
-                      "mCoefficient": 0.699999988079071
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          "mSimpleTooltipCalculationDisplay": 6
-        },
-        "ttBlueDamage": {
-          "StaticTooltipCalculationDisplay": 5,
-          "__type": "GameCalculationModified",
-          "mExpandedTooltipCalculationDisplay": 5,
-          "mModifiedGameCalculation": "BlueDamage",
-          "mMultiplier": {
-            "__type": "NumberCalculationPart",
-            "mNumber": 1
-          },
-          "mSimpleTooltipCalculationDisplay": 5
-        },
-        "ttGoldDamage": {
-          "StaticTooltipCalculationDisplay": 5,
-          "__type": "GameCalculationModified",
-          "mExpandedTooltipCalculationDisplay": 5,
-          "mModifiedGameCalculation": "GoldDamage",
-          "mMultiplier": {
-            "__type": "NumberCalculationPart",
-            "mNumber": 1
-          },
-          "mSimpleTooltipCalculationDisplay": 5
-        },
-        "ttRedDamage": {
-          "StaticTooltipCalculationDisplay": 5,
-          "__type": "GameCalculationModified",
-          "mExpandedTooltipCalculationDisplay": 5,
-          "mModifiedGameCalculation": "RedDamage",
-          "mMultiplier": {
-            "__type": "NumberCalculationPart",
-            "mNumber": 1
-          },
-          "mSimpleTooltipCalculationDisplay": 5
+          ]
         }
       },
-      "mSpellTags": [
-        "Trait_ImmobilizingCCSpell",
-        "PositiveEffect_EmpowerAttack"
-      ],
+      "PercentHPPerStack": {
+        "__type": "GameCalculation",
+        "mDisplayAsPercent": true,
+        "mFormulaParts": [
+          {
+            "__type": "NamedDataValueCalculationPart",
+            "mDataValue": "BasePercentHPPerStack"
+          },
+          {
+            "__type": "StatBySubPartCalculationPart",
+            "mSubpart": {
+              "__type": "ProductOfSubPartsCalculationPart",
+              "mPart1": {
+                "__type": "NumberCalculationPart",
+                "mNumber": 0.009999999776482582
+              },
+              "mPart2": {
+                "__type": "NumberCalculationPart",
+                "mNumber": 0.014999999664723873
+              }
+            }
+          }
+        ],
+        "mPrecision": 1
+      },
       "mTargetingTypeData": {
         "__type": "Self"
       },
-      "mana": [50, 55, 60, 65, 70, 75],
-      "missileSpeed": 20,
-      "selectionPriority": 1
+      "missileSpeed": 1200,
+      "selectionPriority": 2
     }
   }
 }

@@ -31,9 +31,9 @@ func (dv SpellDataValue) dataValue(ttp *Tooltip) {
 
 // Handle Scaling values on strings @Name1@
 func (val DataVal) scaling(ttp *Tooltip, name string, i int) {
-	old := fmt.Sprintf("%s%d", name, i)
+	old := fmt.Sprintf("@%s%d", name, i)
 	new := fmt.Sprint(val)
-	n := strings.Replace(string(*ttp), old, new, -1)
+	n := strings.Replace(string(*ttp), old, fmt.Sprintf("@%s", new), -1)
 	*ttp = Tooltip(n)
 }
 

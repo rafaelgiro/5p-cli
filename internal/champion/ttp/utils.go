@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 func initialCleanup(ttp *Tooltip) {
@@ -41,31 +42,50 @@ func formatDecimal(number string) (string, error) {
 	return fmt.Sprintf("%.2f", value), nil
 }
 
-// evaluateExpression takes an expression string, evaluates it, and returns the result as a string.
+// evaluateExpression evaluates a mathematical expression within `@` and returns the result as a string.
 func evaluateExpression(expression string) (string, error) {
-	// Remove the `@` characters
-	expression = expression[1 : len(expression)-1]
-	// Split the expression into its components (assuming the format is `a*b`)
-	parts := regexp.MustCompile(`\*`).Split(expression, -1)
-	if len(parts) != 2 {
-		return "", fmt.Errorf("invalid expression format")
+	// Remove the enclosing `@` symbols
+	expression = strings.Trim(expression, "@")
+
+	// If the expression contains a final multiplier, handle it
+	if strings.Contains(expression, "*") {
+		parts := strings.Split(expression, "*")
+		if len(parts) != 2 {
+			return "", fmt.Errorf("invalid expression format")
+		}
+		numbersPart := parts[0]
+		multiplierPart := parts[1]
+
+		// Parse the multiplier
+		multiplier, err := strconv.ParseFloat(multiplierPart, 64)
+		if err != nil {
+			return "", err
+		}
+
+		// Split the numbers part by `/` and evaluate each one
+		numbers := strings.Split(numbersPart, "/")
+		results := make([]string, len(numbers))
+		for i, numberStr := range numbers {
+			number, err := strconv.ParseFloat(numberStr, 64)
+			if err != nil {
+				return "", err
+			}
+			results[i] = fmt.Sprintf("%.2f", number*multiplier)
+		}
+
+		// Join the results with `/` and return the final string
+		return strings.Join(results, "/"), nil
 	}
-	// Convert the parts to float64
-	a, err := strconv.ParseFloat(parts[0], 64)
+
+	// If there is no multiplier, evaluate the simple expression (assuming simple arithmetic)
+	value, err := strconv.ParseFloat(expression, 64)
 	if err != nil {
 		return "", err
 	}
-	b, err := strconv.ParseFloat(parts[1], 64)
-	if err != nil {
-		return "", err
-	}
-	// Perform the multiplication
-	result := a * b
-	// Return the result as a string formatted to 2 decimal places
-	return fmt.Sprintf("%.2f", result), nil
+	return fmt.Sprintf("%.2f", value), nil
 }
 
-// processString takes the entire input string, formats all decimal numbers, evaluates expressions between `@`, and replaces them with their results.
+// calculate takes the entire input string, formats all decimal numbers, evaluates expressions between `@`, and replaces them with their results.
 func calculate(input string) (string, error) {
 	// Regular expression to find all decimal numbers
 	reDecimal := regexp.MustCompile(`\d+\.\d+`)

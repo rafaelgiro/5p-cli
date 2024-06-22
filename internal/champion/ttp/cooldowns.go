@@ -13,7 +13,7 @@ func (c Cooldowns) toTooltip(ttp *Tooltip) {
 	cds := []string{}
 
 	for i, cd := range c {
-		old := fmt.Sprintf("Cooldown%d", i)
+		old := fmt.Sprintf("@Cooldown%d@", i)
 		new := fmt.Sprint(cd)
 		n := strings.Replace(ttp.ToString(), old, new, -1)
 		cds = append(cds, new)
