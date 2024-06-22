@@ -7,24 +7,31 @@ import (
 	"strings"
 )
 
-func HandleTooltip(ttp string, spl SpellDataResource) (string, error) {
-	c := initialCleanup(ttp)
+type Tooltip string
 
-	spl.DataValues.toTooltip(&c)
+func (ttp *Tooltip) Calc(spl SpellDataResource) error {
+	initialCleanup(ttp)
 
-	effectAmount(&c, spl.EffectAmount)
-	spellCalculations(&c, spl)
-	cooldown(&c, spl)
-	cost(&c, spl)
+	spl.DataValues.toTooltip(ttp)
 
-	f := finalCleanup(c)
-	return f, nil
+	// effectAmount(ttp, spl.EffectAmount)
+	// spellCalculations(ttp, spl)
+	// cooldown(ttp, spl)
+	// cost(ttp, spl)
+
+	// f := finalCleanup(c)
+	return nil
 }
 
-func initialCleanup(input string) string {
+func (ttp Tooltip) ToString() string {
+	tp := string(ttp)
+	return tp
+}
+
+func initialCleanup(ttp *Tooltip) {
 	reSpecial := regexp.MustCompile(`@[^@]*?(?:Postfix|Prefix)@`)
-	result := reSpecial.ReplaceAllString(input, "")
-	return result
+	result := reSpecial.ReplaceAllString(ttp.ToString(), "")
+	*ttp = Tooltip(result)
 }
 
 func effectAmount(ttp *string, spl []SpellEffectAmount) {

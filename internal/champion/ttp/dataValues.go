@@ -15,13 +15,13 @@ type SpellDataValue struct {
 	Values DataVals `mapstructure:"mValues"`
 }
 
-func (spl SpellValues) toTooltip(ttp *string) {
+func (spl SpellValues) toTooltip(ttp *Tooltip) {
 	for _, val := range spl {
 		val.dataValue(ttp)
 	}
 }
 
-func (dv SpellDataValue) dataValue(ttp *string) {
+func (dv SpellDataValue) dataValue(ttp *Tooltip) {
 	dv.Values.combine(ttp, dv.Name)
 
 	for i, item := range dv.Values {
@@ -30,15 +30,15 @@ func (dv SpellDataValue) dataValue(ttp *string) {
 }
 
 // Handle Scaling values on strings @Name1@
-func (val DataVal) scaling(ttp *string, name string, i int) {
+func (val DataVal) scaling(ttp *Tooltip, name string, i int) {
 	old := fmt.Sprintf("%s%d", name, i)
 	new := fmt.Sprint(val)
-	n := strings.Replace(*ttp, old, new, -1)
-	*ttp = n
+	n := strings.Replace(string(*ttp), old, new, -1)
+	*ttp = Tooltip(n)
 }
 
 // Handle Single value on strings @Name@
-func (val DataVals) combine(ttp *string, name string) {
+func (val DataVals) combine(ttp *Tooltip, name string) {
 	old := fmt.Sprintf("@%s@", name)
 	strValues := make([]string, len(val))
 
@@ -47,10 +47,10 @@ func (val DataVals) combine(ttp *string, name string) {
 	}
 
 	new := strings.Join(strValues, "/")
-	n := strings.Replace(*ttp, old, new, -1)
+	n := strings.Replace(string(*ttp), old, new, -1)
 
 	// weird multiplications values on strings @Name*100@
 	old = fmt.Sprintf("@%s*", name)
 	n = strings.Replace(n, old, fmt.Sprintf("@%s*", new), -1)
-	*ttp = n
+	*ttp = Tooltip(n)
 }

@@ -176,21 +176,20 @@ func mount(d JSONData) (map[string]string, error) {
 		if sp[0] == "Characters" && sp[2] == "Spells" && len(sp) == 5 {
 			ak := sp[4]
 			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(ak))
-			tp := d.Tooltips[tk]
+			tp := ttp.Tooltip(d.Tooltips[tk])
 			if len(tp) == 0 {
 				tk = fmt.Sprintf("generatedtip_passive_%s_tooltipextended", strings.ToLower(ak))
-				tp = d.Tooltips[tk]
+				tp = ttp.Tooltip(d.Tooltips[tk])
 			}
 
 			spl := d.Character[k].Spell
 
-			v, err := ttp.HandleTooltip(tp, spl)
-			if err != nil {
+			if err := tp.Calc(spl); err != nil {
 				return map[string]string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
 			}
 
-			if len(v) != 0 {
-				ts[k] = v
+			if len(string(tp)) != 0 {
+				ts[k] = string(tp)
 			}
 		}
 	}
