@@ -10,14 +10,9 @@ type SpellDataResource struct {
 	CooldownTime      []float64                  `mapstructure:"cooldownTime"`
 	CastTime          float64                    `mapstructure:"mCastTime"`
 	DataValues        SpellValues                `mapstructure:"mDataValues"`
-	EffectAmount      []SpellEffectAmount        `mapstructure:"mEffectAmount"`
+	EffectAmount      SpellEffectAmount          `mapstructure:"mEffectAmount"`
 	SpellCalculations map[string]GameCalculation `mapstructure:"mSpellCalculations"`
 	Mana              []float64                  `mapstructure:"mana"`
-}
-
-type SpellEffectAmount struct {
-	Type  string    `mapstructure:"__type"`
-	Value []float64 `mapstructure:"value"`
 }
 
 type GameCalculation struct {

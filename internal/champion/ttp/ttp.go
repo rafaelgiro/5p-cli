@@ -13,6 +13,7 @@ func (ttp *Tooltip) Calc(spl SpellDataResource) error {
 	initialCleanup(ttp)
 
 	spl.DataValues.toTooltip(ttp)
+	spl.EffectAmount.toTooltip(ttp)
 
 	// effectAmount(ttp, spl.EffectAmount)
 	// spellCalculations(ttp, spl)
@@ -32,33 +33,6 @@ func initialCleanup(ttp *Tooltip) {
 	reSpecial := regexp.MustCompile(`@[^@]*?(?:Postfix|Prefix)@`)
 	result := reSpecial.ReplaceAllString(ttp.ToString(), "")
 	*ttp = Tooltip(result)
-}
-
-func effectAmount(ttp *string, spl []SpellEffectAmount) {
-	for ei, val := range spl {
-		for i, item := range val.Value {
-			// Handle Scaling values on strings
-			old := fmt.Sprintf("@Effect%dAmount%d@", ei+1, i)
-			new := fmt.Sprint(item)
-			n := strings.Replace(*ttp, old, new, -1)
-
-			// Additional replace to handle multiplication values
-			old = fmt.Sprintf("Effect%dAmount%d", ei+1, i)
-			new = fmt.Sprint(item)
-			n = strings.Replace(n, old, new, -1)
-
-			// Handle Single value on strings
-			old = fmt.Sprintf("@Effect%dAmount@", ei+1)
-			strValues := make([]string, len(val.Value))
-			for i, v := range val.Value {
-				strValues[i] = fmt.Sprint(v)
-			}
-			new = strings.Join(strValues, "/")
-			n = strings.Replace(n, old, new, -1)
-
-			*ttp = n
-		}
-	}
 }
 
 func cost(ttp *string, spl SpellDataResource) {
