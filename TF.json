@@ -1,129 +1,225 @@
 {
-  "Characters/Sion/Spells/SionRAbility/SionR": {
+  "Characters/Varus/Spells/VarusWAbility/VarusW": {
     "__type": "SpellObject",
     "mBuff": {
       "__type": "BuffData",
-      "mDescription": "game_buff_tooltip_SionR"
+      "mDescription": "game_buff_tooltip_VarusW"
     },
-    "mScriptName": "SionR",
+    "mScriptName": "VarusW",
     "mSpell": {
       "__type": "SpellDataResource",
       "bIsToggleSpell": true,
-      "cantCastWhileRooted": true,
+      "canCastWhileDisabled": true,
       "castConeDistance": 100,
-      "castFrame": 7.5,
-      "castRadius": [500, 500, 500, 500, 500, 500, 500],
-      "castRange": [25000, 25000, 25000, 25000, 25000, 25000, 25000],
-      "castRangeDisplayOverride": [7500, 7500, 7500, 7500, 7500, 7500, 7500],
-      "cooldownTime": [10, 140, 100, 60, 10, 10, 10],
-      "delayCastOffsetPercent": -0.75,
-      "delayTotalTimePercent": -0.75,
-      "flags": 32,
-      "mAffectsTypeFlags": 6154,
-      "mAnimationLoopName": "Spell4_Base",
-      "mAnimationName": "Spell4_In",
-      "mAnimationWinddownName": "Spell4_Leadout",
-      "mCanMoveWhileChanneling": true,
-      "mCancelChargeOnRecastTime": 0.5,
+      "castFrame": 1.9800000190734863,
+      "castRadius": [210, 210, 210, 210, 210, 210, 210],
+      "castRange": [10000, 10000, 10000, 10000, 10000, 10000, 10000],
+      "castRangeDisplayOverride": [750, 750, 750, 750, 750, 750, 750],
+      "cooldownTime": [40, 40, 40, 40, 40, 40, 40],
+      "delayCastOffsetPercent": -0.5,
+      "delayTotalTimePercent": -0.5,
+      "flags": 4,
+      "mAffectsTypeFlags": 13327,
+      "mAlternateName": "VarusW",
+      "mAnimationName": "",
       "mCantCancelWhileWindingUp": true,
-      "mCastingBreaksStealth": true,
-      "mChannelDuration": [8, 8, 8, 8, 8, 8, 8],
-      "mChargeUpdateInterval": 0.10000000149011612,
-      "mCoefficient": 0.4000000059604645,
-      "mCoefficient2": 0.800000011920929,
       "mDataValues": [
         {
           "__type": "SpellDataValue",
-          "mName": "MinDamage",
-          "mValues": [0, 150, 300, 450, 600, 750, 900]
+          "mName": "VarusWDebuffDuration",
+          "mValues": [6, 6, 6, 6, 6, 6, 6]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "MaxDamage",
-          "mValues": [0, 400, 800, 1200, 1600, 2000, 2400]
+          "mName": "VarusWMaxStacks",
+          "mValues": [3, 3, 3, 3, 3, 3, 3]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "SlowAmount",
-          "mValues": [35, 40, 45, 50, 55, 60, 65]
+          "mName": "MaxMonsterDamage",
+          "mValues": [120, 120, 120, 120, 120, 120, 120]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "MinionDamagePercent",
-          "mValues": [500, 500, 500, 500, 500, 500, 500]
+          "mName": "BasePercentHPPerStack",
+          "mValues": [
+            0.02500000037252903, 0.029999999329447746, 0.03500000014901161,
+            0.03999999910593033, 0.04500000178813934, 0.05000000074505806,
+            0.054999999701976776
+          ]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "MinStunDuration",
-          "mValues": [0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75]
+          "mName": "QEmpowerMonsterCap",
+          "mValues": [360, 360, 360, 360, 360, 360, 360]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "MaxStunDuration",
-          "mValues": [1.75, 1.75, 1.75, 1.75, 1.75, 1.75, 1.75]
+          "mName": "VarusWOnHitDamage",
+          "mValues": [1, 7, 13, 19, 25, 31, 37]
         },
         {
           "__type": "SpellDataValue",
-          "mName": "MoveSpeedCap",
-          "mValues": [950, 950, 950, 950, 950, 950, 950]
+          "mName": "CDRPerBlightStack",
+          "mValues": [
+            0.11999999731779099, 0.11999999731779099, 0.11999999731779099,
+            0.11999999731779099, 0.11999999731779099, 0.11999999731779099,
+            0.11999999731779099
+          ]
+        },
+        {
+          "__type": "SpellDataValue",
+          "mName": "VarusWMaxChargeHPDamage",
+          "mValues": [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5]
         }
       ],
-      "mDimensionBehavior": 1,
-      "mDisableCastBar": true,
-      "mDoNotNeedToFaceTarget": true,
-      "mFloatVarsDecimals": [0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      "mDoesntBreakChannels": true,
+      "mEffectAmount": [
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [
+            0.02500000037252903, 0.029999999329447746, 0.03500000014901161,
+            0.03999999910593033, 0.04500000178813934, 0.05000000074505806,
+            0.054999999701976776
+          ]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [6, 6, 6, 6, 6, 6, 6]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [3, 3, 3, 3, 3, 3, 3]
+        },
+        {
+          "__type": "SpellEffectAmount",
+          "value": [120, 120, 120, 120, 120, 120, 120]
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        },
+        {
+          "__type": "SpellEffectAmount"
+        }
+      ],
+      "mFloatVarsDecimals": [1, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      "mHitBoneName": "head",
       "mImgIconName": [
-        "ASSETS/Characters/Sion/HUD/Icons2D/Sion_R1.dds",
-        "ASSETS/Characters/Sion/HUD/Icons2D/Sion_R2.dds"
+        "ASSETS/Characters/Varus/HUD/Icons2D/VarusW.dds",
+        "ASSETS/Characters/Varus/HUD/Icons2D/VarusW2.dds"
       ],
-      "mLineWidth": 100,
+      "mKeywordWhenAcquired": "VarusW",
+      "mLineWidth": 50,
+      "mRequiredUnitTags": {
+        "__type": "ObjectTags",
+        "mObjectTagList": ["{ea595ca6}"]
+      },
       "mSpellCalculations": {
-        "MaxDamageTotal": {
-          "__type": "GameCalculation",
-          "mFormulaParts": [
-            {
-              "__type": "NamedDataValueCalculationPart",
-              "mDataValue": "MaxDamage"
-            },
-            {
-              "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 0.800000011920929,
-              "mStat": 2,
-              "mStatFormula": 2
-            }
-          ],
-          "mSimpleTooltipCalculationDisplay": 6
+        "MaxPercentHPPerStack": {
+          "__type": "GameCalculationModified",
+          "mModifiedGameCalculation": "PercentHPPerStack",
+          "mMultiplier": {
+            "__type": "NumberCalculationPart",
+            "mNumber": 3
+          },
+          "tooltipOnly": true
         },
-        "MinDamageTotal": {
+        "MaxQEmpowerPercentHP": {
+          "__type": "GameCalculationModified",
+          "mModifiedGameCalculation": "QEmpowerPercentHP",
+          "mMultiplier": {
+            "__type": "NamedDataValueCalculationPart",
+            "mDataValue": "VarusWMaxChargeHPDamage"
+          }
+        },
+        "OnHitDamage": {
           "__type": "GameCalculation",
           "mFormulaParts": [
             {
               "__type": "NamedDataValueCalculationPart",
-              "mDataValue": "MinDamage"
+              "mDataValue": "VarusWOnHitDamage"
             },
             {
               "__type": "StatByCoefficientCalculationPart",
-              "mCoefficient": 0.4000000059604645,
-              "mStat": 2,
-              "mStatFormula": 2
+              "mCoefficient": 0.3499999940395355
+            }
+          ]
+        },
+        "PercentHPPerStack": {
+          "__type": "GameCalculation",
+          "mDisplayAsPercent": true,
+          "mFormulaParts": [
+            {
+              "__type": "NamedDataValueCalculationPart",
+              "mDataValue": "BasePercentHPPerStack"
+            },
+            {
+              "__type": "StatBySubPartCalculationPart",
+              "mSubpart": {
+                "__type": "ProductOfSubPartsCalculationPart",
+                "mPart1": {
+                  "__type": "NumberCalculationPart",
+                  "mNumber": 0.009999999776482582
+                },
+                "mPart2": {
+                  "__type": "NumberCalculationPart",
+                  "mNumber": 0.014999999664723873
+                }
+              }
             }
           ],
-          "mSimpleTooltipCalculationDisplay": 6
+          "mPrecision": 1
+        },
+        "QEmpowerPercentHP": {
+          "__type": "GameCalculation",
+          "mDisplayAsPercent": true,
+          "mFormulaParts": [
+            {
+              "__type": "ByCharLevelBreakpointsCalculationPart",
+              "mBreakpoints": [
+                {
+                  "__type": "Breakpoint",
+                  "mAdditionalBonusAtThisLevel": 0.019999999552965164,
+                  "mLevel": 4
+                },
+                {
+                  "__type": "Breakpoint",
+                  "mAdditionalBonusAtThisLevel": 0.019999999552965164,
+                  "mLevel": 7
+                },
+                {
+                  "__type": "Breakpoint",
+                  "mAdditionalBonusAtThisLevel": 0.019999999552965164,
+                  "mLevel": 10
+                },
+                {
+                  "__type": "Breakpoint",
+                  "mAdditionalBonusAtThisLevel": 0.019999999552965164,
+                  "mLevel": 13
+                }
+              ],
+              "mLevel1Value": 0.05999999865889549
+            }
+          ]
         }
       },
-      "mSpellTags": [
-        "Trait_Ultimate",
-        "Trait_ChannelSpell",
-        "Trait_ImmobilizingCCSpell"
-      ],
       "mTargetingTypeData": {
-        "__type": "Location"
+        "__type": "Self"
       },
-      "mUseChargeChanneling": true,
-      "mana": [100, 100, 100, 0, 0, 0],
-      "missileSpeed": 1500,
-      "selectionPriority": 1,
-      "useAnimatorFramerate": true
+      "missileSpeed": 1200,
+      "selectionPriority": 2
     }
   }
 }

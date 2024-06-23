@@ -54,3 +54,27 @@ func (ef Effect) combine(ttp *Tooltip, ei int) {
 
 	*ttp = Tooltip(n)
 }
+
+func (ef Effect) toString() string {
+	val := ef.Value
+
+	firstValue := val[0]
+	allSame := true
+	for _, v := range val {
+		if v != firstValue {
+			allSame = false
+			break
+		}
+	}
+
+	if allSame {
+		return fmt.Sprint(firstValue)
+	}
+
+	strValues := make([]string, len(val))
+	for i, v := range val {
+		strValues[i] = fmt.Sprint(v)
+	}
+
+	return strings.Join(strValues, "/")
+}

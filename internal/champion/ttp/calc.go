@@ -28,6 +28,7 @@ type FormulaPart struct {
 	Level1Value          float64          `mapstructure:"mLevel1Value,omitempty"`
 	Stat                 StatIndex        `mapstructure:"mStat,omitempty"`
 	StatFormula          StatFormulaIndex `mapstructure:"mStatFormula,omitempty"`
+	EffectIndex          int              `mapstructure:"mEffectIndex,omitempty"`
 }
 
 type Breakpoint struct {
@@ -64,6 +65,10 @@ func (f FormulaParts) toString(percentage bool, spl SpellDataResource) string {
 			strs = append(strs, statbynameddatavaluecalculationpart(p, spl.DataValues))
 		case "StatByCoefficientCalculationPart":
 			strs = append(strs, statbycoefficientcalculationpart(p))
+		case "ByCharLevelBreakpointsCalculationPart":
+			strs = append(strs, bycharlevelbreakpointscalculationpart(p))
+		case "EffectValueCalculationPart":
+			strs = append(strs, effectvaluecalculationpart(p, spl.EffectAmount))
 		default:
 			strs = append(strs, fmt.Sprintf("{{NOT IMPL: %s}}", p.Type))
 		}
@@ -101,4 +106,32 @@ func statbycoefficientcalculationpart(p FormulaPart) string {
 	stat := p.Stat.toString()
 
 	return fmt.Sprintf("(+ %.2f%% %s %s)", ratio, formula, stat)
+}
+
+func bycharlevelbreakpointscalculationpart(p FormulaPart) string {
+	base := p.Level1Value
+	vals := []float64{}
+	lvs := []float64{}
+
+	for i, bp := range p.Breakpoints {
+		lvs = append(lvs, float64(bp.Level))
+
+		if i == 0 {
+			vals = append(vals, base+bp.AdditionalBonusAtThisLevel)
+		} else {
+			vals = append(vals, vals[i-1]+bp.AdditionalBonusAtThisLevel)
+		}
+	}
+
+	return fmt.Sprintf("%s (at level %s)", arrayToString(vals, "/"), arrayToString(lvs, "/"))
+}
+
+func arrayToString(a []float64, delim string) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
+}
+
+func effectvaluecalculationpart(p FormulaPart, e SpellEffectAmount) string {
+	ef := e[p.EffectIndex-1]
+
+	return ef.toString()
 }
