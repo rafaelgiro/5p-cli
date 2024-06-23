@@ -18,14 +18,16 @@ type GameCalculation struct {
 type FormulaParts []FormulaPart
 
 type FormulaPart struct {
-	Type                 string       `mapstructure:"__type"`
-	DataValue            string       `mapstructure:"mDataValue,omitempty"`
-	Coefficient          float64      `mapstructure:"mCoefficient,omitempty"`
-	EndValue             float64      `mapstructure:"mEndValue,omitempty"`
-	StartValue           float64      `mapstructure:"mStartValue,omitempty"`
-	Breakpoints          []Breakpoint `mapstructure:"mBreakpoints,omitempty"`
-	InitialBonusPerLevel float64      `mapstructure:"mInitialBonusPerLevel,omitempty"`
-	Level1Value          float64      `mapstructure:"mLevel1Value,omitempty"`
+	Type                 string           `mapstructure:"__type"`
+	DataValue            string           `mapstructure:"mDataValue,omitempty"`
+	Coefficient          float64          `mapstructure:"mCoefficient,omitempty"`
+	EndValue             float64          `mapstructure:"mEndValue,omitempty"`
+	StartValue           float64          `mapstructure:"mStartValue,omitempty"`
+	Breakpoints          []Breakpoint     `mapstructure:"mBreakpoints,omitempty"`
+	InitialBonusPerLevel float64          `mapstructure:"mInitialBonusPerLevel,omitempty"`
+	Level1Value          float64          `mapstructure:"mLevel1Value,omitempty"`
+	Stat                 StatIndex        `mapstructure:"mStat,omitempty"`
+	StatFormula          StatFormulaIndex `mapstructure:"mStatFormula,omitempty"`
 }
 
 type Breakpoint struct {
@@ -45,7 +47,6 @@ func (sc SpellCalc) toTooltip(ttp *Tooltip, spl SpellDataResource) {
 	for key, val := range sc {
 		if val.Type == "GameCalculation" && val.FormulaParts != nil {
 			r := val.FormulaParts.toString(val.DisplayAsPercent, spl)
-			fmt.Println(key, r)
 			n := strings.Replace(ttp.ToString(), fmt.Sprintf("@%s@", key), r, -1)
 			*ttp = Tooltip(n)
 		}
@@ -58,9 +59,11 @@ func (f FormulaParts) toString(percentage bool, spl SpellDataResource) string {
 	for _, p := range f {
 		switch p.Type {
 		case "NamedDataValueCalculationPart":
-			str := nameddatavaluecalculationpart(p.DataValue, percentage, spl.DataValues)
-			strs = append(strs, str)
-
+			strs = append(strs, nameddatavaluecalculationpart(p.DataValue, percentage, spl.DataValues))
+		case "StatByNamedDataValueCalculationPart":
+			strs = append(strs, statbynameddatavaluecalculationpart(p, spl.DataValues))
+		case "StatByCoefficientCalculationPart":
+			strs = append(strs, statbycoefficientcalculationpart(p))
 		default:
 			strs = append(strs, fmt.Sprintf("{{NOT IMPL: %s}}", p.Type))
 		}
@@ -73,18 +76,29 @@ func (f FormulaParts) toString(percentage bool, spl SpellDataResource) string {
 func nameddatavaluecalculationpart(k string, percentage bool, dv SpellValues) string {
 	for _, val := range dv {
 		if k == val.Name {
-			strValues := make([]string, len(val.Values))
-			for i, v := range val.Values {
-				if percentage {
-					strValues[i] = fmt.Sprintf("%.1f%%", v*100)
-				} else {
-
-					strValues[i] = fmt.Sprint(v)
-				}
-			}
-
-			return strings.Join(strValues, "/")
+			return val.Values.toString(percentage)
 		}
 	}
-	return fmt.Sprintf("NOT IMPL {{%s}}", k)
+	return ""
+}
+
+func statbynameddatavaluecalculationpart(p FormulaPart, dv SpellValues) string {
+	for _, val := range dv {
+		if p.DataValue == val.Name {
+			ratio := val.Values.toString(true)
+			formula := p.StatFormula.toString()
+			stat := p.Stat.toString()
+			return fmt.Sprintf("(+ %s %s %s)", ratio, formula, stat)
+		}
+	}
+
+	return ""
+}
+
+func statbycoefficientcalculationpart(p FormulaPart) string {
+	ratio := p.Coefficient * 100
+	formula := p.StatFormula.toString()
+	stat := p.Stat.toString()
+
+	return fmt.Sprintf("(+ %.2f%% %s %s)", ratio, formula, stat)
 }

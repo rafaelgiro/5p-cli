@@ -40,17 +40,45 @@ func (val DataVal) scaling(ttp *Tooltip, name string, i int) {
 // Handle Single value on strings @Name@
 func (val DataVals) combine(ttp *Tooltip, name string) {
 	old := fmt.Sprintf("@%s@", name)
-	strValues := make([]string, len(val))
-
-	for j, v := range val {
-		strValues[j] = fmt.Sprint(v)
-	}
-
-	new := strings.Join(strValues, "/")
+	new := val.toString(false)
 	n := strings.Replace(string(*ttp), old, new, -1)
 
 	// weird multiplications values on strings @Name*100@
 	old = fmt.Sprintf("@%s*", name)
 	n = strings.Replace(n, old, fmt.Sprintf("@%s*", new), -1)
 	*ttp = Tooltip(n)
+}
+
+func (val DataVals) toString(percentage bool) string {
+	if len(val) == 0 {
+		return ""
+	}
+
+	firstValue := val[0]
+	allSame := true
+	for _, v := range val {
+		if v != firstValue {
+			allSame = false
+			break
+		}
+	}
+
+	if allSame {
+		if percentage {
+			return fmt.Sprintf("%.1f%%", firstValue*100)
+		} else {
+			return fmt.Sprint(firstValue)
+		}
+	}
+
+	strValues := make([]string, len(val))
+	for i, v := range val {
+		if percentage {
+			strValues[i] = fmt.Sprintf("%.1f%%", v*100)
+		} else {
+			strValues[i] = fmt.Sprint(v)
+		}
+	}
+
+	return strings.Join(strValues, "/")
 }
