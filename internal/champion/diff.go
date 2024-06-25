@@ -5,17 +5,33 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/5pots-com/cli/internal/champion/ttp"
 	"github.com/5pots-com/cli/internal/common"
 	"github.com/mitchellh/mapstructure"
 	diff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
 )
 
+type diffChampion struct {
+	Name string `json:"name"`
+}
+
 type diffResult struct {
-	Keys []string               `json:"keys"`
-	Live []string               `json:"live"`
-	PBE  []string               `json:"pbe"`
-	Diff map[string]interface{} `json:"diff"`
+	Champion diffChampion           `json:"champion"`
+	Keys     []string               `json:"keys"`
+	Live     map[string]string      `json:"live"`
+	PBE      map[string]string      `json:"pbe"`
+	Diff     map[string]interface{} `json:"diff"`
+}
+
+type JSONData struct {
+	Character map[string]ttp.SpellObject `mapstructure:"character"`
+	Tooltips  map[string]string          `mapstructure:"tooltips"`
+}
+
+type DownloadedData struct {
+	Character map[string]interface{} `json:"-"`
+	Tooltips  map[string]interface{} `json:"tooltips"`
 }
 
 var blacklist = []string{"yuumi"}
@@ -75,16 +91,22 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 	}
 
 	keys := []string{}
+	name := ""
+
 	for key := range diffs {
+		if strings.Split(key, "/")[0] == "Characters" && len(name) == 0 {
+			name = strings.Split(key, "/")[1]
+		}
+
 		if key[0] != '{' {
 			keys = append(keys, key)
 		}
 	}
 
-	if len(keys) == 0 {
-		fmt.Printf("No changes found for %s\n", c.Name)
-		return diffResult{}, nil
-	}
+	// if len(keys) == 0 {
+	// 	fmt.Printf("No changes found for %s\n", c.Name)
+	// 	return diffResult{}, nil
+	// }
 
 	live, err := decode(ld)
 	if err != nil {
@@ -96,17 +118,18 @@ func (c *Champion) PrepareDiff(dir, outputDir string) (diffResult, error) {
 		return diffResult{}, fmt.Errorf("failed to decode %s PBE files: %v", dir, err)
 	}
 
-	lttps, err := mount(live, diffs)
+	lttps, err := mount(live)
 	if err != nil {
 		return diffResult{}, fmt.Errorf("failed to read live tooltips: %v", err)
 	}
 
-	pttps, err := mount(pbe, diffs)
+	pttps, err := mount(pbe)
 	if err != nil {
 		return diffResult{}, fmt.Errorf("failed to read PBE tooltips: %v", err)
 	}
 
 	result := diffResult{}
+	result.Champion = diffChampion{Name: name}
 	result.Live = lttps
 	result.PBE = pttps
 	result.Keys = keys
@@ -143,26 +166,33 @@ func decode(d []byte) (JSONData, error) {
 	return result, nil
 }
 
-func mount(d JSONData, diffs map[string]interface{}) ([]string, error) {
-	t := []string{}
+func mount(d JSONData) (map[string]string, error) {
+	ts := map[string]string{}
 
-	for k := range diffs {
+	for k := range d.Character {
 		sp := strings.Split(k, "/")
 
 		// Handle spell tooltip
 		if sp[0] == "Characters" && sp[2] == "Spells" && len(sp) == 5 {
-			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(sp[4]))
-			ttp := d.Tooltips[tk]
-			spl := d.Character[k].Spell
-
-			f, err := HandleTooltip(ttp, spl)
-			if err != nil {
-				return []string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
+			ak := sp[4]
+			tk := fmt.Sprintf("generatedtip_spell_%s_tooltipextended", strings.ToLower(ak))
+			tp := ttp.Tooltip(d.Tooltips[tk])
+			if len(tp) == 0 {
+				tk = fmt.Sprintf("generatedtip_passive_%s_tooltipextended", strings.ToLower(ak))
+				tp = ttp.Tooltip(d.Tooltips[tk])
 			}
 
-			t = append(t, f)
+			spl := d.Character[k].Spell
+
+			if err := tp.Calc(spl); err != nil {
+				return map[string]string{}, fmt.Errorf("failed to convert champion ability to tooltip: %s; %v", k, err)
+			}
+
+			if len(string(tp)) != 0 {
+				ts[k] = string(tp)
+			}
 		}
 	}
 
-	return t, nil
+	return ts, nil
 }
