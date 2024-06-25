@@ -38,25 +38,23 @@ func (ef Effect) scaling(ttp *Tooltip, ei int) {
 
 // Handle Single value on strings @Effect1Amount@
 func (ef Effect) combine(ttp *Tooltip, ei int) {
-	strValues := make([]string, len(ef.Value))
-	for i, v := range ef.Value {
-		strValues[i] = fmt.Sprint(v)
-	}
-
 	old := fmt.Sprintf("@Effect%dAmount@", ei+1)
-	new := strings.Join(strValues, "/")
+	new := ef.toString(1)
 	n := strings.Replace(ttp.ToString(), old, new, -1)
 
 	// Additional replace to handle multiplication values @Effect1Ammount*100@
 	old = fmt.Sprintf("Effect%dAmount", ei+1)
-	new = strings.Join(strValues, "/")
 	n = strings.Replace(n, old, new, -1)
 
 	*ttp = Tooltip(n)
 }
 
-func (ef Effect) toString() string {
+func (ef Effect) toString(mult float64) string {
 	val := ef.Value
+
+	if len(val) == 0 {
+		return ""
+	}
 
 	firstValue := val[0]
 	allSame := true
@@ -68,12 +66,12 @@ func (ef Effect) toString() string {
 	}
 
 	if allSame {
-		return fmt.Sprint(firstValue)
+		return fmt.Sprint(firstValue * mult)
 	}
 
 	strValues := make([]string, len(val))
 	for i, v := range val {
-		strValues[i] = fmt.Sprint(v)
+		strValues[i] = fmt.Sprint(v * mult)
 	}
 
 	return strings.Join(strValues, "/")

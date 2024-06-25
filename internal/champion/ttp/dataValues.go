@@ -40,7 +40,7 @@ func (val DataVal) scaling(ttp *Tooltip, name string, i int) {
 // Handle Single value on strings @Name@
 func (val DataVals) combine(ttp *Tooltip, name string) {
 	old := fmt.Sprintf("@%s@", name)
-	new := val.toString(false)
+	new := val.toString(false, 1)
 	n := strings.Replace(string(*ttp), old, new, -1)
 
 	// weird multiplications values on strings @Name*100@
@@ -49,7 +49,7 @@ func (val DataVals) combine(ttp *Tooltip, name string) {
 	*ttp = Tooltip(n)
 }
 
-func (val DataVals) toString(percentage bool) string {
+func (val DataVals) toString(percentage bool, mult float64) string {
 	if len(val) == 0 {
 		return ""
 	}
@@ -65,20 +65,30 @@ func (val DataVals) toString(percentage bool) string {
 
 	if allSame {
 		if percentage {
-			return fmt.Sprintf("%.1f%%", firstValue*100)
+			return fmt.Sprintf("%.1f%%", float64(firstValue)*100*mult)
 		} else {
-			return fmt.Sprint(firstValue)
+			return fmt.Sprint(float64(firstValue) * mult)
 		}
 	}
 
 	strValues := make([]string, len(val))
 	for i, v := range val {
 		if percentage {
-			strValues[i] = fmt.Sprintf("%.1f%%", v*100)
+			strValues[i] = fmt.Sprintf("%.1f%%", float64(v)*100*mult)
 		} else {
-			strValues[i] = fmt.Sprint(v)
+			strValues[i] = fmt.Sprint(float64(v) * mult)
 		}
 	}
 
 	return strings.Join(strValues, "/")
+}
+
+func (d SpellDataResource) getDataValue(k string) SpellDataValue {
+	for _, val := range d.DataValues {
+		if val.Name == k {
+			return val
+		}
+	}
+
+	return SpellDataValue{}
 }
