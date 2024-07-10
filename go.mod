@@ -1,4 +1,4 @@
-module github.com/5pots-com/cli
+module github.com/rafaelgiro/5p-cli
 
 go 1.22.3
 
